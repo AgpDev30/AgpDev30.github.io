@@ -91,6 +91,7 @@
     .hasil { font-weight: bold; font-size: 17px; margin: 10px 0; min-height: 25px; }
     .peringatan { color: #FF4444; font-weight: bold; margin-top: 8px; padding: 8px; background: rgba(255,68,68,0.1); border-radius: 6px; }
     .pesan-sukses { color: #00FF7F; font-weight: bold; margin-top: 8px; padding: 8px; background: rgba(0,255,127,0.1); border-radius: 6px; }
+    .pesan-pending { color: #FFC107; font-weight: bold; margin-top: 12px; padding: 12px; background: rgba(255, 193, 7, 0.15); border-radius: 8px; border: 1px solid #FFC107; }
     .sembunyi { display: none !important; }
     .dialog-overlay {
       position: fixed;
@@ -143,12 +144,21 @@
     </div>
     <div class="hasil" id="hasilTeks"></div>
     <div id="pesanInfo"></div>
+
+    <!-- ✅ TAMPILAN STATUS PENARIKAN (SELALU DI BAWAH) -->
+    <div id="statusPenarikan" class="sembunyi pesan-pending">
+      <p>⏳ Team Sedang Riview Penghasilan anda</p>
+      <p id="jumlahTarik"></p>
+      <p id="tanggalTarik"></p>
+      <p id="idTarik"></p>
+    </div>
+
     <br><br>
     <button class="btn btn2" onclick="tampilkanIklan()">📺 Tonton Iklan Dan Dukung Kami</button>
     <br>
     <button class="btn btn-tarik" onclick="tarikSaldo()">💸 Withdraw Saldo</button>
   </div>
-  <!-- ✅ DIALOG: HANYA PAYMENT SETTINGS (MUNCUL PAS DI KLIK) -->
+  <!-- ✅ DIALOG: PAYMENT SETTINGS -->
   <div id="dialogPengaturan" class="dialog-overlay sembunyi">
     <div class="dialog-box">
       <h3>Pengaturan Pembayaran</h3>
@@ -165,15 +175,13 @@
         <input type="email" class="form-input" id="emailPaypal" placeholder="Masukkan Email PayPal">
         <input type="text" class="form-input" id="namaPaypal" placeholder="Masukkan Nama Lengkap">
       </div>
-      <!-- ✅ TOMBOL SAVE -->
       <button class="btn-save sembunyi" id="btnSave" onclick="simpanPengaturan()">💾 Save</button>
       <br>
-      <!-- ✅ TOMBOL TUTUP DIPERBAIKI -->
       <button class="btn-tutup" onclick="tutupPengaturan()">Tutup</button>
     </div>
   </div>
 
-  <!-- ✅ DIALOG WITHDRAW (TIDAK MUNCUL OTOMATIS) -->
+  <!-- ✅ DIALOG WITHDRAW -->
   <div id="dialogPenarikan" class="dialog-overlay sembunyi">
     <div class="dialog-box">
       <h3>Formulir Penarikan</h3>
@@ -195,9 +203,11 @@
     let saldo = parseFloat(localStorage.getItem("saldoTekaTeki")) || 0.00;
     updateSaldoTampilan();
 
-    // ✅ SIMPAN DATA PEMBAYARAN
+    // ✅ DATA PEMBAYARAN & STATUS PENARIKAN
     let metodeTerpilih = localStorage.getItem("metodePembayaran") || "";
     let dataPembayaran = JSON.parse(localStorage.getItem("dataPembayaran")) || {};
+    let statusPenarikan = localStorage.getItem("statusPenarikan") || "kosong";
+    let dataPenarikan = JSON.parse(localStorage.getItem("dataPenarikan")) || {};
 
     const daftarSoal = [
       {soal: "Semakin banyak kamu ambil, semakin besar ukurannya. Apakah itu?", jawaban: "lubang"},
@@ -241,6 +251,9 @@
       document.getElementById("pesanInfo").innerHTML = "";
       document.getElementById("tombolLanjut").classList.add("sembunyi");
     }
+
+    // ✅ TAMPILKAN STATUS PENARIKAN JIKA MASIH PENDING
+    cekStatusPenarikan();
     function cekJawaban(){
       const jawabUser = document.getElementById("inputJawab").value.trim().toLowerCase();
       const jawabBenar = daftarSoal[nomorSekarang].jawaban.toLowerCase();
@@ -279,10 +292,9 @@
       } else { alert("⚠️ Iklan sedang dimuat, coba lagi!"); }
     }
 
-    // ✅ BUKA DIALOG KHUSUS PAYMENT SETTINGS SAJA
+    // ✅ BUKA PAYMENT SETTINGS
     function bukaPengaturan(){
       document.getElementById("dialogPengaturan").classList.remove("sembunyi");
-      // Tampilkan data lama kalau sudah ada
       if(metodeTerpilih === 'dana'){
         pilihMetode('dana');
         document.getElementById("nomorDana").value = dataPembayaran.nomor || "";
@@ -295,7 +307,6 @@
       }
     }
 
-    // ✅ PILIH METODE
     function pilihMetode(metode){
       metodeTerpilih = metode;
       document.getElementById("formDana").classList.add("sembunyi");
@@ -304,7 +315,7 @@
       if(metode === 'paypal') document.getElementById("formPaypal").classList.remove("sembunyi");
       document.getElementById("btnSave").classList.remove("sembunyi");
     }
-    // ✅ SIMPAN & TUTUP OTOMATIS
+
     function simpanPengaturan(){
       if(metodeTerpilih === 'dana'){
         dataPembayaran = {
@@ -320,48 +331,98 @@
           nama: document.getElementById("namaPaypal").value
         };
       }
-      // Simpan permanen
       localStorage.setItem("metodePembayaran", metodeTerpilih);
       localStorage.setItem("dataPembayaran", JSON.stringify(dataPembayaran));
-      // Tutup otomatis
       tutupPengaturan();
       document.getElementById("pesanInfo").innerHTML = "<div class='pesan-sukses'>✅ Data Pembayaran Tersimpan!</div>";
     }
 
-    // ✅ FUNGSI TUTUP DIALOG PAYMENT SETTINGS (DIPERBAIKI BERFUNGSI)
     function tutupPengaturan(){
       document.getElementById("dialogPengaturan").classList.add("sembunyi");
       document.getElementById("formDana").classList.add("sembunyi");
       document.getElementById("formPaypal").classList.add("sembunyi");
       document.getElementById("btnSave").classList.add("sembunyi");
     }
-
-    // ✅ FITUR WITHDRAW
+    // ✅ FITUR WITHDRAW LENGKAP SESUAI PERMINTAAN
     function tarikSaldo(){
       document.getElementById("pesanInfo").innerHTML = "";
-      if(saldo >= 10.00){
-        if(!metodeTerpilih){
-          document.getElementById("pesanInfo").innerHTML = "<div class='peringatan'>⚠️ Atur Dulu Payment Settings!</div>";
-          return;
-        }
-        document.getElementById("dialogPenarikan").classList.remove("sembunyi");
-      } else {
-        document.getElementById("pesanInfo").innerHTML = "<div class='peringatan'>❌ Saldo Tidak Cukup! Minimal $10.00</div>";
+
+      // Cek kalau masih ada penarikan berjalan
+      if(statusPenarikan === "pending"){
+        document.getElementById("pesanInfo").innerHTML = "<div class='peringatan'>⚠️ Kamu masih melakukan penarikan / tunggu penarikan berhasil!</div>";
+        return;
       }
+
+      // Cek syarat lain
+      if(saldo < 10.00){
+        document.getElementById("pesanInfo").innerHTML = "<div class='peringatan'>❌ Saldo Tidak Cukup! Minimal $10.00</div>";
+        return;
+      }
+      if(!metodeTerpilih){
+        document.getElementById("pesanInfo").innerHTML = "<div class='peringatan'>⚠️ Atur Dulu Payment Settings!</div>";
+        return;
+      }
+
+      // Tampilkan dialog konfirmasi
+      document.getElementById("dialogPenarikan").classList.remove("sembunyi");
     }
 
     function kirimPenarikan(){
       tutupDialog();
-      document.getElementById("pesanInfo").innerHTML = "<div class='pesan-sukses'>✅ Tim Sedang Review Penghasilan Anda</div>";
+
+      // Simpan data penarikan
+      let jumlahDitarik = saldo;
+      let tanggalSekarang = new Date().toLocaleString('id-ID');
+      let idUnik = "TRX-" + Math.floor(Math.random() * 1000000);
+
+      dataPenarikan = {
+        jumlah: jumlahDitarik.toFixed(2),
+        tanggal: tanggalSekarang,
+        id: idUnik
+      };
+
+      // Ubah status jadi PENDING & saldo jadi 0
+      statusPenarikan = "pending";
+      saldo = 0.00;
+      updateSaldoTampilan();
+
+      // Simpan ke penyimpanan
+      localStorage.setItem("statusPenarikan", statusPenarikan);
+      localStorage.setItem("dataPenarikan", JSON.stringify(dataPenarikan));
+
+      // Tampilkan status di bawah
+      tampilkanStatusPenarikan();
     }
 
-    // ✅ FUNGSI TUTUP DIALOG WITHDRAW (DIPERBAIKI BERFUNGSI)
+    // ✅ Tampilkan status penarikan
+    function tampilkanStatusPenarikan(){
+      document.getElementById("statusPenarikan").classList.remove("sembunyi");
+      document.getElementById("jumlahTarik").textContent = "$ " + dataPenarikan.jumlah;
+      document.getElementById("tanggalTarik").textContent = "Tanggal: " + dataPenarikan.tanggal;
+      document.getElementById("idTarik").textContent = "ID Penarikan: " + dataPenarikan.id;
+    }
+
+    // ✅ Cek saat aplikasi dibuka
+    function cekStatusPenarikan(){
+      if(statusPenarikan === "pending"){
+        tampilkanStatusPenarikan();
+      }
+    }
+
+    // ✅ Nanti kalau penarikan sukses, panggil fungsi ini:
+    // function penarikanSukses(){
+    //   statusPenarikan = "sukses";
+    //   localStorage.setItem("statusPenarikan", statusPenarikan);
+    //   document.getElementById("statusPenarikan").classList.add("sembunyi");
+    // }
+
     function tutupDialog(){
       document.getElementById("dialogPenarikan").classList.add("sembunyi");
     }
 
-    // ✅ JALANKAN PERTAMA KALI
+    // ✅ JALANKAN AWAL
     tampilkanSoal();
+    cekStatusPenarikan();
   </script>
 
 </body>
