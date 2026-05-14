@@ -166,7 +166,7 @@
     let saldo = parseFloat(localStorage.getItem("saldoTekaTeki")) || 0.00;
     updateSaldoTampilan();
 
-    // ✅ DAFTAR SOAL SUDAH DIPERBAIKI (TIDAK ADA KESALAHAN KODE)
+    // ✅ DAFTAR SOAL SUDAH DIPERBAIKI
     const daftarSoal = [
       {soal: "Semakin banyak kamu ambil, semakin besar ukurannya. Apakah itu?", jawaban: "lubang"},
       {soal: "Benda apa yang kalau dipotong malah jadi semakin panjang?", jawaban: "jembatan"},
@@ -212,36 +212,56 @@
       document.getElementById("tombolLanjut").classList.add("sembunyi");
     }
 
-    // ✅ CEK JAWABAN
+    // ✅ CEK JAWABAN: BENAR → DAPAT $0.40 + TAMPIL IKLAN + OTOMATIS SOAL BERIKUTNYA
     function cekJawaban(){
       const jawabUser = document.getElementById("inputJawab").value.trim().toLowerCase();
       const jawabBenar = daftarSoal[nomorSekarang].jawaban.toLowerCase();
       
       if(jawabUser === jawabBenar){
-        document.getElementById("hasilTeks").textContent = "✅ BENAR! Hebat sekali!";
+        document.getElementById("hasilTeks").textContent = "✅ BENAR! + $0.40 Ditambahkan";
         document.getElementById("hasilTeks").style.color = "#81FF81";
-        if(typeof show_11003507 !== 'undefined') show_11003507();
-        document.getElementById("tombolLanjut").classList.remove("sembunyi");
+
+        // ✅ TAMBAH $0.40 KETIKA BENAR
+        saldo += 0.40;
+        updateSaldoTampilan();
+        document.getElementById("pesanInfo").innerHTML = "<div class='pesan-sukses'>+ $0.40 Berhasil!</div>";
+
+        // ✅ TAMPILKAN IKLAN OTOMATIS
+        if(typeof show_11003507 !== 'undefined') {
+          show_11003507('pop').then(function(){
+            // ✅ SETELAH IKLAN SELESAI → LANGSUNG PINDAH SOAL BERIKUTNYA
+            soalBerikutnyaOtomatis();
+          });
+        } else {
+          // Kalau iklan gagal → tetap pindah soal
+          soalBerikutnyaOtomatis();
+        }
+
       }else{
         document.getElementById("hasilTeks").textContent = "❌ Salah, coba lagi ya!";
         document.getElementById("hasilTeks").style.color = "#FF9E9E";
       }
     }
 
-    // ✅ SOAL BERIKUTNYA
+    // ✅ PINDAH SOAL OTOMATIS TANPA KLIK
+    function soalBerikutnyaOtomatis(){
+      nomorSekarang = (nomorSekarang + 1) % daftarSoal.length;
+      tampilkanSoal();
+    }
+
+    // ✅ SOAL BERIKUTNYA (MANUAL JIKA PERLU)
     function soalBerikutnya(){
       nomorSekarang = (nomorSekarang + 1) % daftarSoal.length;
       tampilkanSoal();
     }
 
-    // ✅ TONTON IKLAN → DAPAT $0.4
+    // ✅ KLIK TOMBOL IKLAN DUKUNG → DAPAT $0.02
     function tampilkanIklan(){
       if(typeof show_11003507 !== 'undefined'){
         show_11003507('pop').then(function(){ 
-          alert("🙏 Terima kasih sudah mendukung kami! 🚀");
-          saldo += 0.40;
+          saldo += 0.02; // ✅ DAPAT $0.02
           updateSaldoTampilan();
-          document.getElementById("pesanInfo").innerHTML = "<div class='pesan-sukses'>+ $0.40 Berhasil Ditambahkan!</div>";
+          document.getElementById("pesanInfo").innerHTML = "<div class='pesan-sukses'>+ $0.02 Terima Kasih!</div>";
         });
       } else {
         alert("⚠️ Iklan sedang dimuat, coba lagi!");
