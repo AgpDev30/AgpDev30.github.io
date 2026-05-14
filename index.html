@@ -32,7 +32,6 @@
       text-align: center;
     }
 
-    /* ✅ TAMPILAN SALDO PERSIS GAMBAR */
     .saldo-box {
       background: #7B61FF;
       padding: 12px 20px;
@@ -85,88 +84,99 @@
       width: 100%;
       transition: 0.3s;
     }
-    .btn:hover {
-      transform: scale(1.02);
+    .btn:hover { transform: scale(1.02); }
+    .btn2 { background: #FFC107; color: #222; font-size: 17px; padding: 16px; }
+    .btn-tarik { background: #4CAF50; color: #fff; font-size: 17px; padding: 16px; }
+    .hasil { font-weight: bold; font-size: 17px; margin: 10px 0; min-height: 25px; }
+    .peringatan { color: #FF4444; font-weight: bold; margin-top: 8px; padding: 8px; background: rgba(255,68,68,0.1); border-radius: 6px; }
+    .pesan-sukses { color: #00FF7F; font-weight: bold; margin-top: 8px; padding: 8px; background: rgba(0,255,127,0.1); border-radius: 6px; }
+    .sembunyi { display: none; }
+    .dialog-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
     }
-    .btn2 {
-      background: #FFC107;
-      color: #222222;
-      font-size: 17px;
-      padding: 16px;
+    .dialog-box {
+      background: #fff;
+      color: #333;
+      padding: 25px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 380px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
     }
-    .btn-tarik {
-      background: #4CAF50;
-      color: #ffffff;
-      font-size: 17px;
-      padding: 16px;
-    }
-    .hasil {
-      font-weight: bold;
-      font-size: 17px;
-      margin: 10px 0;
-      min-height: 25px;
-    }
-    .peringatan {
-      color: #FF4444;
-      font-weight: bold;
-      margin-top: 8px;
-      padding: 8px;
-      background: rgba(255,68,68,0.1);
-      border-radius: 6px;
-    }
-    .pesan-sukses {
-      color: #00FF7F;
-      font-weight: bold;
-      margin-top: 8px;
-      padding: 8px;
-      background: rgba(0,255,127,0.1);
-      border-radius: 6px;
-    }
-    .sembunyi {
-      display: none;
-    }
+    .dialog-box h3 { margin-bottom: 15px; color: #673AB7; }
+    .pilihan-metod { display: flex; gap: 10px; margin-bottom: 15px; }
+    .btn-metod { flex: 1; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    .btn-dana { background: #00C2E8; color: white; }
+    .btn-paypal { background: #0070BA; color: white; }
+    .form-input { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; }
+    .btn-kirim { background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; margin-top: 10px; width: 100%; cursor: pointer; }
+    .btn-tutup { background: #ccc; color: #333; border: none; padding: 8px 15px; border-radius: 6px; margin-top: 10px; cursor: pointer; }
   </style>
 </head>
 <body>
 
   <div class="kotak">
-    <!-- ✅ TAMPILAN SALDO SAMA PERSIS GAMBAR -->
     <div class="saldo-box">💰 Saldo: $<span id="saldoUser">0.00</span></div>
-
     <h1>🧩 TEKA TEKI CUAN</h1>
     <div id="bagianSoal">
       <p class="soal" id="teksSoal"></p>
       <input class="jawaban" id="inputJawab" placeholder="Ketik jawaban disini" type="text" />
-      <br />
+      <br>
       <button class="btn" onclick="cekJawaban()">✅ Cek Jawaban</button>
-      <br /><br />
+      <br><br>
       <button class="btn sembunyi" id="tombolLanjut" onclick="soalBerikutnya()">⏭️ Soal Berikutnya</button>
     </div>
     <div class="hasil" id="hasilTeks"></div>
     <div id="pesanInfo"></div>
-
-    <br /><br />
+    <br><br>
     <button class="btn btn2" onclick="tampilkanIklan()">📺 Tonton Iklan Dan Dukung Kami</button>
-    
     <br>
     <button class="btn btn-tarik" onclick="tarikSaldo()">💸 Withdraw Saldo</button>
   </div>
 
+  <div id="dialogPenarikan" class="dialog-overlay sembunyi">
+    <div class="dialog-box">
+      <h3>Formulir Penarikan</h3>
+      <p>Pilih Metode Pembayaran:</p>
+      <div class="pilihan-metod">
+        <button class="btn-metod btn-dana" onclick="pilihMetode('dana')">DANA</button>
+        <button class="btn-metod btn-paypal" onclick="pilihMetode('paypal')">PAYPAL</button>
+      </div>
+      <div id="formDana" class="sembunyi">
+        <input type="text" class="form-input" id="nomorDana" placeholder="Masukkan Nomor DANA">
+        <input type="text" class="form-input" id="namaDana" placeholder="Masukkan Nama Lengkap">
+      </div>
+      <div id="formPaypal" class="sembunyi">
+        <input type="email" class="form-input" id="emailPaypal" placeholder="Masukkan Email PayPal">
+        <input type="text" class="form-input" id="namaPaypal" placeholder="Masukkan Nama Lengkap">
+      </div>
+      <button class="btn-kirim sembunyi" id="btnKirim" onclick="kirimPenarikan()">SEND</button>
+      <br>
+      <button class="btn-tutup" onclick="tutupDialog()">Tutup</button>
+    </div>
+  </div>
   <script>
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
 
-    // ✅ FITUR: /START OTOMATIS LANGSUNG MASUK
     if (tg.initDataUnsafe) {
       tg.openLink("https://agpdev30.github.io/index.html");
     }
 
-    // ✅ SIMPAN SALDO
     let saldo = parseFloat(localStorage.getItem("saldoTekaTeki")) || 0.00;
     updateSaldoTampilan();
 
-    // ✅ DAFTAR SOAL SUDAH DIPERBAIKI
     const daftarSoal = [
       {soal: "Semakin banyak kamu ambil, semakin besar ukurannya. Apakah itu?", jawaban: "lubang"},
       {soal: "Benda apa yang kalau dipotong malah jadi semakin panjang?", jawaban: "jembatan"},
@@ -196,14 +206,13 @@
     ];
 
     let nomorSekarang = 0;
+    let metodeTerpilih = "";
 
-    // ✅ UPDATE SALDO
     function updateSaldoTampilan(){
       document.getElementById("saldoUser").textContent = saldo.toFixed(2);
       localStorage.setItem("saldoTekaTeki", saldo.toFixed(2));
     }
 
-    // ✅ TAMPILKAN SOAL (LEBIH CEPAT & RESPONSIF)
     function tampilkanSoal(){
       document.getElementById("teksSoal").textContent = daftarSoal[nomorSekarang].soal;
       document.getElementById("inputJawab").value = "";
@@ -211,48 +220,34 @@
       document.getElementById("pesanInfo").innerHTML = "";
       document.getElementById("tombolLanjut").classList.add("sembunyi");
     }
-
-    // ✅ CEK JAWABAN: BENAR → IKLAN REWARD SAJA, LANGSUNG PINDAH SOAL TANPA DELAY
-    function cekJawaban(){
+        function cekJawaban(){
       const jawabUser = document.getElementById("inputJawab").value.trim().toLowerCase();
       const jawabBenar = daftarSoal[nomorSekarang].jawaban.toLowerCase();
       
       if(jawabUser === jawabBenar){
         document.getElementById("hasilTeks").textContent = "✅ BENAR! + $0.40 Ditambahkan";
         document.getElementById("hasilTeks").style.color = "#81FF81";
-
-        // ✅ TAMBAH $0.40 KETIKA BENAR
         saldo += 0.40;
         updateSaldoTampilan();
         document.getElementById("pesanInfo").innerHTML = "<div class='pesan-sukses'>+ $0.40 Berhasil!</div>";
-
-        // ✅ LANGSUNG PINDAH SOAL DULU → AGAR TIDAK DELAY
         soalBerikutnyaOtomatis();
-
-        // ✅ TAMPILKAN IKLAN REWARD SAJA (TIDAK ADA REDIRECT/KELUAR)
-        if(typeof show_11003507 !== 'undefined') {
-          show_11003507('reward'); // <--- KHUSUS IKLAN REWARD
-        }
-
+        if(typeof show_11003507 !== 'undefined') { show_11003507('reward'); }
       }else{
         document.getElementById("hasilTeks").textContent = "❌ Salah, coba lagi ya!";
         document.getElementById("hasilTeks").style.color = "#FF9E9E";
       }
     }
 
-    // ✅ PINDAH SOAL OTOMATIS → LANGSUNG, CEPAT, TIDAK ADA TUNGGU
     function soalBerikutnyaOtomatis(){
       nomorSekarang = (nomorSekarang + 1) % daftarSoal.length;
       tampilkanSoal();
     }
 
-    // ✅ SOAL BERIKUTNYA (MANUAL JIKA PERLU)
     function soalBerikutnya(){
       nomorSekarang = (nomorSekarang + 1) % daftarSoal.length;
       tampilkanSoal();
     }
 
-    // ✅ KLIK TOMBOL IKLAN DUKUNG → DAPAT $0.02 (IKLAN POPUP/REWARD)
     function tampilkanIklan(){
       if(typeof show_11003507 !== 'undefined'){
         show_11003507('reward').then(function(){ 
@@ -260,24 +255,47 @@
           updateSaldoTampilan();
           document.getElementById("pesanInfo").innerHTML = "<div class='pesan-sukses'>+ $0.02 Terima Kasih!</div>";
         });
-      } else {
-        alert("⚠️ Iklan sedang dimuat, coba lagi!");
-      }
+      } else { alert("⚠️ Iklan sedang dimuat, coba lagi!"); }
     }
 
-    // ✅ FITUR WITHDRAW
     function tarikSaldo(){
       document.getElementById("pesanInfo").innerHTML = "";
       if(saldo >= 10.00){
-        document.getElementById("pesanInfo").innerHTML = "<div class='pesan-sukses'>✅ Pending, Di Cek Oleh Team</div>";
+        document.getElementById("dialogPenarikan").classList.remove("sembunyi");
       } else {
         document.getElementById("pesanInfo").innerHTML = "<div class='peringatan'>❌ Saldo Tidak Cukup! Minimal Penarikan $10.00</div>";
       }
     }
+        function pilihMetode(metode){
+      metodeTerpilih = metode;
+      document.getElementById("formDana").classList.add("sembunyi");
+      document.getElementById("formPaypal").classList.add("sembunyi");
+      if(metode === 'dana') document.getElementById("formDana").classList.remove("sembunyi");
+      if(metode === 'paypal') document.getElementById("formPaypal").classList.remove("sembunyi");
+      document.getElementById("btnKirim").classList.remove("sembunyi");
+    }
 
-    // ✅ JALANKAN PERTAMA KALI
+    function kirimPenarikan(){
+      tutupDialog();
+      document.getElementById("pesanInfo").innerHTML = "<div class='pesan-sukses'>✅ Team Sedang Riview Penghasilan anda</div>";
+    }
+
+    function tutupDialog(){
+      document.getElementById("dialogPenarikan").classList.add("sembunyi");
+      document.getElementById("nomorDana").value = "";
+      document.getElementById("namaDana").value = "";
+      document.getElementById("emailPaypal").value = "";
+      document.getElementById("namaPaypal").value = "";
+      document.getElementById("formDana").classList.add("sembunyi");
+      document.getElementById("formPaypal").classList.add("sembunyi");
+      document.getElementById("btnKirim").classList.add("sembunyi");
+      metodeTerpilih = "";
+    }
+
     tampilkanSoal();
   </script>
 
 </body>
 </html>
+
+
