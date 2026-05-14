@@ -203,7 +203,7 @@
       localStorage.setItem("saldoTekaTeki", saldo.toFixed(2));
     }
 
-    // ✅ TAMPILKAN SOAL
+    // ✅ TAMPILKAN SOAL (LEBIH CEPAT & RESPONSIF)
     function tampilkanSoal(){
       document.getElementById("teksSoal").textContent = daftarSoal[nomorSekarang].soal;
       document.getElementById("inputJawab").value = "";
@@ -212,7 +212,7 @@
       document.getElementById("tombolLanjut").classList.add("sembunyi");
     }
 
-    // ✅ CEK JAWABAN: BENAR → DAPAT $0.40 + TAMPIL IKLAN + OTOMATIS SOAL BERIKUTNYA
+    // ✅ CEK JAWABAN: BENAR → IKLAN REWARD SAJA, LANGSUNG PINDAH SOAL TANPA DELAY
     function cekJawaban(){
       const jawabUser = document.getElementById("inputJawab").value.trim().toLowerCase();
       const jawabBenar = daftarSoal[nomorSekarang].jawaban.toLowerCase();
@@ -226,15 +226,12 @@
         updateSaldoTampilan();
         document.getElementById("pesanInfo").innerHTML = "<div class='pesan-sukses'>+ $0.40 Berhasil!</div>";
 
-        // ✅ TAMPILKAN IKLAN OTOMATIS
+        // ✅ LANGSUNG PINDAH SOAL DULU → AGAR TIDAK DELAY
+        soalBerikutnyaOtomatis();
+
+        // ✅ TAMPILKAN IKLAN REWARD SAJA (TIDAK ADA REDIRECT/KELUAR)
         if(typeof show_11003507 !== 'undefined') {
-          show_11003507('pop').then(function(){
-            // ✅ SETELAH IKLAN SELESAI → LANGSUNG PINDAH SOAL BERIKUTNYA
-            soalBerikutnyaOtomatis();
-          });
-        } else {
-          // Kalau iklan gagal → tetap pindah soal
-          soalBerikutnyaOtomatis();
+          show_11003507('reward'); // <--- KHUSUS IKLAN REWARD
         }
 
       }else{
@@ -243,7 +240,7 @@
       }
     }
 
-    // ✅ PINDAH SOAL OTOMATIS TANPA KLIK
+    // ✅ PINDAH SOAL OTOMATIS → LANGSUNG, CEPAT, TIDAK ADA TUNGGU
     function soalBerikutnyaOtomatis(){
       nomorSekarang = (nomorSekarang + 1) % daftarSoal.length;
       tampilkanSoal();
@@ -255,11 +252,11 @@
       tampilkanSoal();
     }
 
-    // ✅ KLIK TOMBOL IKLAN DUKUNG → DAPAT $0.02
+    // ✅ KLIK TOMBOL IKLAN DUKUNG → DAPAT $0.02 (IKLAN POPUP/REWARD)
     function tampilkanIklan(){
       if(typeof show_11003507 !== 'undefined'){
-        show_11003507('pop').then(function(){ 
-          saldo += 0.02; // ✅ DAPAT $0.02
+        show_11003507('reward').then(function(){ 
+          saldo += 0.02; 
           updateSaldoTampilan();
           document.getElementById("pesanInfo").innerHTML = "<div class='pesan-sukses'>+ $0.02 Terima Kasih!</div>";
         });
