@@ -32,75 +32,95 @@
       text-align: center;
     }
 
-    /* ✅ TAMPILAN SALDO DI ATAS */
+    /* ✅ TAMPILAN SALDO PERSIS GAMBAR */
     .saldo-box {
-      background: rgba(255, 255, 255, 0.2);
-      padding: 12px;
+      background: #7B61FF;
+      padding: 12px 20px;
       border-radius: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
       font-size: 22px;
       font-weight: bold;
       color: #FFD700;
-      border: 2px solid #FFD700;
+      border: 3px solid #FFD700;
+      display: inline-block;
+      width: 100%;
     }
 
     h1 {
-      font-size: 24px;
-      margin-bottom: 20px;
+      font-size: 26px;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
     .soal {
       font-size: 18px;
       margin-bottom: 25px;
       line-height: 1.6;
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
+      border-radius: 10px;
     }
     .jawaban {
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       border: none;
       border-radius: 8px;
       font-size: 16px;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
+      background: #ffffff;
+      color: #333;
     }
     .btn {
       background: #ffffff;
       color: #673AB7;
       border: none;
-      padding: 12px 20px;
+      padding: 14px 20px;
       border-radius: 8px;
       font-weight: bold;
       font-size: 16px;
-      margin: 5px;
+      margin: 8px 0;
       cursor: pointer;
-      width: 85%;
+      width: 100%;
       transition: 0.3s;
     }
     .btn:hover {
-      transform: scale(1.05);
+      transform: scale(1.02);
     }
     .btn2 {
       background: #FFC107;
       color: #222222;
+      font-size: 17px;
+      padding: 16px;
     }
     .btn-tarik {
       background: #4CAF50;
       color: #ffffff;
-      margin-top: 10px;
+      font-size: 17px;
+      padding: 16px;
     }
     .hasil {
       font-weight: bold;
       font-size: 17px;
-      margin-top: 15px;
+      margin: 10px 0;
       min-height: 25px;
     }
     .peringatan {
       color: #FF4444;
       font-weight: bold;
       margin-top: 8px;
+      padding: 8px;
+      background: rgba(255,68,68,0.1);
+      border-radius: 6px;
     }
     .pesan-sukses {
       color: #00FF7F;
       font-weight: bold;
       margin-top: 8px;
+      padding: 8px;
+      background: rgba(0,255,127,0.1);
+      border-radius: 6px;
     }
     .sembunyi {
       display: none;
@@ -110,7 +130,7 @@
 <body>
 
   <div class="kotak">
-    <!-- ✅ TAMPILAN SALDO DI ATAS -->
+    <!-- ✅ TAMPILAN SALDO SAMA PERSIS GAMBAR -->
     <div class="saldo-box">💰 Saldo: $<span id="saldoUser">0.00</span></div>
 
     <h1>🧩 TEKA TEKI CUAN</h1>
@@ -123,12 +143,11 @@
       <button class="btn sembunyi" id="tombolLanjut" onclick="soalBerikutnya()">⏭️ Soal Berikutnya</button>
     </div>
     <div class="hasil" id="hasilTeks"></div>
-    <div id="pesanInfo"></div> <!-- Tempat peringatan / pesan -->
+    <div id="pesanInfo"></div>
 
     <br /><br />
     <button class="btn btn2" onclick="tampilkanIklan()">📺 Tonton Iklan Dan Dukung Kami</button>
     
-    <!-- ✅ TOMBOL WITHDRAW -->
     <br>
     <button class="btn btn-tarik" onclick="tarikSaldo()">💸 Withdraw Saldo</button>
   </div>
@@ -138,10 +157,16 @@
     tg.ready();
     tg.expand();
 
-    // ✅ FITUR: SIMPAN SALDO DI MEMORY
+    // ✅ FITUR: /START OTOMATIS LANGSUNG MASUK
+    if (tg.initDataUnsafe) {
+      tg.openLink("https://agpdev30.github.io/index.html");
+    }
+
+    // ✅ SIMPAN SALDO
     let saldo = parseFloat(localStorage.getItem("saldoTekaTeki")) || 0.00;
     updateSaldoTampilan();
 
+    // ✅ DAFTAR SOAL SUDAH DIPERBAIKI (TIDAK ADA KESALAHAN KODE)
     const daftarSoal = [
       {soal: "Semakin banyak kamu ambil, semakin besar ukurannya. Apakah itu?", jawaban: "lubang"},
       {soal: "Benda apa yang kalau dipotong malah jadi semakin panjang?", jawaban: "jembatan"},
@@ -161,7 +186,7 @@
       {soal: "Benda apa yang punya mulut tapi tidak bisa bicara?", jawaban: "pintu"},
       {soal: "Benda apa yang punya banyak daun tapi bukan pohon?", jawaban: "buku"},
       {soal: "Apa yang kalau kering malah jadi basah?", jawaban: "kapas mandi"},
-      {soal: "Benda apa yang bisa jalan tapi tidak punya kaki, jawaban: "air"},
+      {soal: "Benda apa yang bisa jalan tapi tidak punya kaki?", jawaban: "air"},
       {soal: "Benda apa yang kalau diikat dia pergi, kalau dilepas dia diam?", jawaban: "sepatu"},
       {soal: "Apa yang penuh lubang tapi tetap bisa menampung air?", jawaban: "spons"},
       {soal: "Benda apa yang punya lidah tapi tidak punya mulut?", jawaban: "sepatu"},
@@ -172,12 +197,13 @@
 
     let nomorSekarang = 0;
 
-    // ✅ UPDATE TAMPILAN SALDO
+    // ✅ UPDATE SALDO
     function updateSaldoTampilan(){
       document.getElementById("saldoUser").textContent = saldo.toFixed(2);
       localStorage.setItem("saldoTekaTeki", saldo.toFixed(2));
     }
 
+    // ✅ TAMPILKAN SOAL
     function tampilkanSoal(){
       document.getElementById("teksSoal").textContent = daftarSoal[nomorSekarang].soal;
       document.getElementById("inputJawab").value = "";
@@ -186,6 +212,7 @@
       document.getElementById("tombolLanjut").classList.add("sembunyi");
     }
 
+    // ✅ CEK JAWABAN
     function cekJawaban(){
       const jawabUser = document.getElementById("inputJawab").value.trim().toLowerCase();
       const jawabBenar = daftarSoal[nomorSekarang].jawaban.toLowerCase();
@@ -201,37 +228,37 @@
       }
     }
 
+    // ✅ SOAL BERIKUTNYA
     function soalBerikutnya(){
       nomorSekarang = (nomorSekarang + 1) % daftarSoal.length;
       tampilkanSoal();
     }
 
-    // ✅ KETIK SUKSES LIHAT IKLAN → DAPAT $0.4
+    // ✅ TONTON IKLAN → DAPAT $0.4
     function tampilkanIklan(){
       if(typeof show_11003507 !== 'undefined'){
         show_11003507('pop').then(function(){ 
           alert("🙏 Terima kasih sudah mendukung kami! 🚀");
-          saldo += 0.40; // TAMBAH $0.4
+          saldo += 0.40;
           updateSaldoTampilan();
           document.getElementById("pesanInfo").innerHTML = "<div class='pesan-sukses'>+ $0.40 Berhasil Ditambahkan!</div>";
         });
+      } else {
+        alert("⚠️ Iklan sedang dimuat, coba lagi!");
       }
     }
 
-    // ✅ FITUR WITHDRAW / TARIK SALDO
+    // ✅ FITUR WITHDRAW
     function tarikSaldo(){
       document.getElementById("pesanInfo").innerHTML = "";
       if(saldo >= 10.00){
-        // Jika saldo cukup
         document.getElementById("pesanInfo").innerHTML = "<div class='pesan-sukses'>✅ Pending, Di Cek Oleh Team</div>";
-        // saldo = 0; // Uncomment ini kalau mau saldo jadi 0 setelah tarik
-        // updateSaldoTampilan();
       } else {
-        // Jika saldo BELUM cukup
         document.getElementById("pesanInfo").innerHTML = "<div class='peringatan'>❌ Saldo Tidak Cukup! Minimal Penarikan $10.00</div>";
       }
     }
 
+    // ✅ JALANKAN PERTAMA KALI
     tampilkanSoal();
   </script>
 
