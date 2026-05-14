@@ -87,6 +87,7 @@
     .btn:hover { transform: scale(1.02); }
     .btn2 { background: #FFC107; color: #222; font-size: 17px; padding: 16px; }
     .btn-tarik { background: #4CAF50; color: #fff; font-size: 17px; padding: 16px; }
+    .btn-setting { background: #2196F3; color: #fff; font-size: 15px; padding: 12px; margin-bottom: 15px; }
     .hasil { font-weight: bold; font-size: 17px; margin: 10px 0; min-height: 25px; }
     .peringatan { color: #FF4444; font-weight: bold; margin-top: 8px; padding: 8px; background: rgba(255,68,68,0.1); border-radius: 6px; }
     .pesan-sukses { color: #00FF7F; font-weight: bold; margin-top: 8px; padding: 8px; background: rgba(0,255,127,0.1); border-radius: 6px; }
@@ -119,7 +120,7 @@
     .btn-dana { background: #00C2E8; color: white; }
     .btn-paypal { background: #0070BA; color: white; }
     .form-input { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; }
-    .btn-kirim { background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; margin-top: 10px; width: 100%; cursor: pointer; }
+    .btn-save { background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; margin-top: 10px; width: 100%; cursor: pointer; }
     .btn-tutup { background: #ccc; color: #333; border: none; padding: 8px 15px; border-radius: 6px; margin-top: 10px; cursor: pointer; }
   </style>
 </head>
@@ -128,6 +129,10 @@
   <div class="kotak">
     <div class="saldo-box">💰 Saldo: $<span id="saldoUser">0.00</span></div>
     <h1>🧩 TEKA TEKI CUAN</h1>
+
+    <!-- ✅ TOMBOL BARU: PAYMENT SETTINGS -->
+    <button class="btn btn-setting" onclick="bukaPengaturan()">⚙️ Payment Settings</button>
+
     <div id="bagianSoal">
       <p class="soal" id="teksSoal"></p>
       <input class="jawaban" id="inputJawab" placeholder="Ketik jawaban disini" type="text" />
@@ -143,10 +148,10 @@
     <br>
     <button class="btn btn-tarik" onclick="tarikSaldo()">💸 Withdraw Saldo</button>
   </div>
-
-  <div id="dialogPenarikan" class="dialog-overlay sembunyi">
+  <!-- ✅ DIALOG PAYMENT SETTINGS -->
+  <div id="dialogPengaturan" class="dialog-overlay sembunyi">
     <div class="dialog-box">
-      <h3>Formulir Penarikan</h3>
+      <h3>Pengaturan Pembayaran</h3>
       <p>Pilih Metode Pembayaran:</p>
       <div class="pilihan-metod">
         <button class="btn-metod btn-dana" onclick="pilihMetode('dana')">DANA</button>
@@ -160,7 +165,19 @@
         <input type="email" class="form-input" id="emailPaypal" placeholder="Masukkan Email PayPal">
         <input type="text" class="form-input" id="namaPaypal" placeholder="Masukkan Nama Lengkap">
       </div>
-      <button class="btn-kirim sembunyi" id="btnKirim" onclick="kirimPenarikan()">SEND</button>
+      <!-- ✅ TOMBOL SAVE DI BAWAH -->
+      <button class="btn-save sembunyi" id="btnSave" onclick="simpanPengaturan()">💾 Save</button>
+      <br>
+      <button class="btn-tutup" onclick="tutupPengaturan()">Tutup</button>
+    </div>
+  </div>
+
+  <!-- ✅ DIALOG WITHDRAW -->
+  <div id="dialogPenarikan" class="dialog-overlay sembunyi">
+    <div class="dialog-box">
+      <h3>Formulir Penarikan</h3>
+      <p>Saldo Anda akan dikirim ke akun yang sudah disimpan</p>
+      <button class="btn-save" onclick="kirimPenarikan()">Kirim Penarikan</button>
       <br>
       <button class="btn-tutup" onclick="tutupDialog()">Tutup</button>
     </div>
@@ -176,6 +193,10 @@
 
     let saldo = parseFloat(localStorage.getItem("saldoTekaTeki")) || 0.00;
     updateSaldoTampilan();
+
+    // ✅ SIMPAN DATA PEMBAYARAN
+    let metodeTerpilih = localStorage.getItem("metodePembayaran") || "";
+    let dataPembayaran = JSON.parse(localStorage.getItem("dataPembayaran")) || {};
 
     const daftarSoal = [
       {soal: "Semakin banyak kamu ambil, semakin besar ukurannya. Apakah itu?", jawaban: "lubang"},
@@ -206,7 +227,6 @@
     ];
 
     let nomorSekarang = 0;
-    let metodeTerpilih = "";
 
     function updateSaldoTampilan(){
       document.getElementById("saldoUser").textContent = saldo.toFixed(2);
@@ -220,7 +240,7 @@
       document.getElementById("pesanInfo").innerHTML = "";
       document.getElementById("tombolLanjut").classList.add("sembunyi");
     }
-        function cekJawaban(){
+    function cekJawaban(){
       const jawabUser = document.getElementById("inputJawab").value.trim().toLowerCase();
       const jawabBenar = daftarSoal[nomorSekarang].jawaban.toLowerCase();
       
@@ -258,44 +278,89 @@
       } else { alert("⚠️ Iklan sedang dimuat, coba lagi!"); }
     }
 
-    function tarikSaldo(){
-      document.getElementById("pesanInfo").innerHTML = "";
-      if(saldo >= 10.00){
-        document.getElementById("dialogPenarikan").classList.remove("sembunyi");
-      } else {
-        document.getElementById("pesanInfo").innerHTML = "<div class='peringatan'>❌ Saldo Tidak Cukup! Minimal Penarikan $10.00</div>";
+    // ✅ BUKA DIALOG PAYMENT SETTINGS
+    function bukaPengaturan(){
+      document.getElementById("dialogPengaturan").classList.remove("sembunyi");
+      // Tampilkan data lama kalau sudah disimpan
+      if(metodeTerpilih === 'dana'){
+        pilihMetode('dana');
+        document.getElementById("nomorDana").value = dataPembayaran.nomor || "";
+        document.getElementById("namaDana").value = dataPembayaran.nama || "";
+      }
+      if(metodeTerpilih === 'paypal'){
+        pilihMetode('paypal');
+        document.getElementById("emailPaypal").value = dataPembayaran.email || "";
+        document.getElementById("namaPaypal").value = dataPembayaran.nama || "";
       }
     }
-        function pilihMetode(metode){
+
+    // ✅ PILIH METODE
+    function pilihMetode(metode){
       metodeTerpilih = metode;
       document.getElementById("formDana").classList.add("sembunyi");
       document.getElementById("formPaypal").classList.add("sembunyi");
       if(metode === 'dana') document.getElementById("formDana").classList.remove("sembunyi");
       if(metode === 'paypal') document.getElementById("formPaypal").classList.remove("sembunyi");
-      document.getElementById("btnKirim").classList.remove("sembunyi");
+      document.getElementById("btnSave").classList.remove("sembunyi");
+    }
+    // ✅ SIMPAN & TUTUP OTOMATIS
+    function simpanPengaturan(){
+      if(metodeTerpilih === 'dana'){
+        dataPembayaran = {
+          metode: 'dana',
+          nomor: document.getElementById("nomorDana").value,
+          nama: document.getElementById("namaDana").value
+        };
+      }
+      if(metodeTerpilih === 'paypal'){
+        dataPembayaran = {
+          metode: 'paypal',
+          email: document.getElementById("emailPaypal").value,
+          nama: document.getElementById("namaPaypal").value
+        };
+      }
+      // Simpan ke penyimpanan HP
+      localStorage.setItem("metodePembayaran", metodeTerpilih);
+      localStorage.setItem("dataPembayaran", JSON.stringify(dataPembayaran));
+      // Tutup otomatis
+      tutupPengaturan();
+      document.getElementById("pesanInfo").innerHTML = "<div class='pesan-sukses'>✅ Data Pembayaran Tersimpan!</div>";
+    }
+
+    // ✅ TUTUP DIALOG PENGATURAN
+    function tutupPengaturan(){
+      document.getElementById("dialogPengaturan").classList.add("sembunyi");
+      document.getElementById("formDana").classList.add("sembunyi");
+      document.getElementById("formPaypal").classList.add("sembunyi");
+      document.getElementById("btnSave").classList.add("sembunyi");
+    }
+
+    // ✅ FITUR WITHDRAW
+    function tarikSaldo(){
+      document.getElementById("pesanInfo").innerHTML = "";
+      if(saldo >= 10.00){
+        if(!metodeTerpilih){
+          document.getElementById("pesanInfo").innerHTML = "<div class='peringatan'>⚠️ Atur Dulu Payment Settings!</div>";
+          return;
+        }
+        document.getElementById("dialogPenarikan").classList.remove("sembunyi");
+      } else {
+        document.getElementById("pesanInfo").innerHTML = "<div class='peringatan'>❌ Saldo Tidak Cukup! Minimal $10.00</div>";
+      }
     }
 
     function kirimPenarikan(){
       tutupDialog();
-      document.getElementById("pesanInfo").innerHTML = "<div class='pesan-sukses'>✅ Team Sedang Riview Penghasilan anda</div>";
+      document.getElementById("pesanInfo").innerHTML = "<div class='pesan-sukses'>✅ Tim Sedang Review Penghasilan Anda</div>";
     }
 
     function tutupDialog(){
       document.getElementById("dialogPenarikan").classList.add("sembunyi");
-      document.getElementById("nomorDana").value = "";
-      document.getElementById("namaDana").value = "";
-      document.getElementById("emailPaypal").value = "";
-      document.getElementById("namaPaypal").value = "";
-      document.getElementById("formDana").classList.add("sembunyi");
-      document.getElementById("formPaypal").classList.add("sembunyi");
-      document.getElementById("btnKirim").classList.add("sembunyi");
-      metodeTerpilih = "";
     }
 
+    // ✅ JALANKAN PERTAMA KALI
     tampilkanSoal();
   </script>
 
 </body>
 </html>
-
-
