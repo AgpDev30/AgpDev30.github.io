@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Teka Teki Cuan</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src='//libtl.com/sdk.js' data-zone='11003507' data-sdk='show_11003507'></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #673AB7, #9C27B0);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: #ffffff;
+    }
+    .kotak {
+      background: rgba(0, 0, 0, 0.25);
+      padding: 30px;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+    .soal {
+      font-size: 18px;
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+    .jawaban {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+    .btn {
+      background: #ffffff;
+      color: #673AB7;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 16px;
+      margin: 5px;
+      cursor: pointer;
+      width: 85%;
+      transition: 0.3s;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+    }
+    .btn2 {
+      background: #FFC107;
+      color: #222222;
+    }
+    .hasil {
+      font-weight: bold;
+      font-size: 17px;
+      margin-top: 15px;
+      min-height: 25px;
+    }
+    .sembunyi {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="kotak">
+    <h1>🧩 TEKA TEKI CUAN</h1>
+    <div id="bagianSoal">
+      <p class="soal" id="teksSoal"></p>
+      <input class="jawaban" id="inputJawab" placeholder="Ketik jawaban disini" type="text" />
+      <br />
+      <button class="btn" onclick="cekJawaban()">✅ Cek Jawaban</button>
+      <br /><br />
+      <button class="btn sembunyi" id="tombolLanjut" onclick="soalBerikutnya()">⏭️ Soal Berikutnya</button>
+    </div>
+    <div class="hasil" id="hasilTeks"></div>
+    <br /><br />
+    <button class="btn btn2" onclick="tampilkanIklan()">📺 Tonton Iklan Dan Dukung Kami</button>
+  </div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+
+    const daftarSoal = [
+      {soal: "Semakin banyak kamu ambil, semakin besar ukurannya. Apakah itu?", jawaban: "lubang"},
+      {soal: "Benda apa yang kalau dipotong malah jadi semakin panjang?", jawaban: "jembatan"},
+      {soal: "Punya mata tapi tidak bisa melihat, punya kaki tapi tidak bisa berjalan. Apakah itu?", jawaban: "meja"},
+      {soal: "Apa yang naik tapi tidak pernah turun?", jawaban: "umur"},
+      {soal: "Benda apa yang kalau basah, beratnya jadi lebih ringan?", jawaban: "kapas"},
+      {soal: "Benda apa yang punya leher tapi tidak punya kepala?", jawaban: "baju"},
+      {soal: "Semakin kamu isi, semakin ringan benda apa itu?", jawaban: "balon"},
+      {soal: "Benda apa yang punya gigi tapi tidak bisa makan?", jawaban: "sisir"},
+      {soal: "Benda apa yang punya banyak gigi tapi tidak pernah mengunyah?", jawaban: "ritsleting"},
+      {soal: "Apa yang kalau dipakai, malah makin pendek?", jawaban: "lilin"},
+      {soal: "Benda apa yang punya kaki empat tapi tidak bisa berjalan?", jawaban: "meja"},
+      {soal: "Benda apa yang punya leher panjang tapi tidak punya kepala?", jawaban: "jerapah"},
+      {soal: "Apa yang ada di ujung langit dan di ujung bumi?", jawaban: "huruf i"},
+      {soal: "Benda apa yang kalau dibalik berubah jadi hal lain?", jawaban: "jam pasir"},
+      {soal: "Apa yang makin dipotong makin tinggi?", jawaban: "celana panjang"},
+      {soal: "Benda apa yang punya mulut tapi tidak bisa bicara?", jawaban: "pintu"},
+      {soal: "Benda apa yang punya banyak daun tapi bukan pohon?", jawaban: "buku"},
+      {soal: "Apa yang kalau kering malah jadi basah?", jawaban: "kapas mandi"},
+      {soal: "Benda apa yang bisa jalan tapi tidak punya kaki?", jawaban: "air"},
+      {soal: "Benda apa yang kalau diikat dia pergi, kalau dilepas dia diam?", jawaban: "sepatu"},
+      {soal: "Apa yang penuh lubang tapi tetap bisa menampung air?", jawaban: "spons"},
+      {soal: "Benda apa yang punya lidah tapi tidak punya mulut?", jawaban: "sepatu"},
+      {soal: "Benda apa yang kalau dijemur malah jadi berat?", jawaban: "es batu"},
+      {soal: "Apa yang lebih besar kalau diambil dari bagian tengah?", jawaban: "lubang"},
+      {soal: "Benda apa yang selalu datang tapi tidak pernah sampai?", jawaban: "besok"}
+    ];
+
+    let nomorSekarang = 0;
+
+    function tampilkanSoal(){
+      document.getElementById("teksSoal").textContent = daftarSoal[nomorSekarang].soal;
+      document.getElementById("inputJawab").value = "";
+      document.getElementById("hasilTeks").textContent = "";
+      document.getElementById("tombolLanjut").classList.add("sembunyi");
+    }
+
+    function cekJawaban(){
+      const jawabUser = document.getElementById("inputJawab").value.trim().toLowerCase();
+      const jawabBenar = daftarSoal[nomorSekarang].jawaban.toLowerCase();
+      
+      if(jawabUser === jawabBenar){
+        document.getElementById("hasilTeks").textContent = "✅ BENAR! Hebat sekali!";
+        document.getElementById("hasilTeks").style.color = "#81FF81";
+        if(typeof show_11003507 !== 'undefined') show_11003507();
+        document.getElementById("tombolLanjut").classList.remove("sembunyi");
+      }else{
+        document.getElementById("hasilTeks").textContent = "❌ Salah, coba lagi ya!";
+        document.getElementById("hasilTeks").style.color = "#FF9E9E";
+      }
+    }
+
+    function soalBerikutnya(){
+      nomorSekarang = (nomorSekarang + 1) % daftarSoal.length;
+      tampilkanSoal();
+    }
+
+    function tampilkanIklan(){
+      if(typeof show_11003507 !== 'undefined'){
+        show_11003507('pop').then(function(){ alert("🙏 Terima kasih sudah mendukung kami! 🚀"); });
+      }
+    }
+
+    tampilkanSoal();
+  </script>
+
+</body>
+</html>
