@@ -91,7 +91,7 @@
     .hasil { font-weight: bold; font-size: 17px; margin: 10px 0; min-height: 25px; }
     .peringatan { color: #FF4444; font-weight: bold; margin-top: 8px; padding: 8px; background: rgba(255,68,68,0.1); border-radius: 6px; }
     .pesan-sukses { color: #00FF7F; font-weight: bold; margin-top: 8px; padding: 8px; background: rgba(0,255,127,0.1); border-radius: 6px; }
-    .sembunyi { display: none; }
+    .sembunyi { display: none !important; }
     .dialog-overlay {
       position: fixed;
       top: 0;
@@ -130,7 +130,7 @@
     <div class="saldo-box">💰 Saldo: $<span id="saldoUser">0.00</span></div>
     <h1>🧩 TEKA TEKI CUAN</h1>
 
-    <!-- ✅ TOMBOL BARU: PAYMENT SETTINGS -->
+    <!-- ✅ TOMBOL PAYMENT SETTINGS -->
     <button class="btn btn-setting" onclick="bukaPengaturan()">⚙️ Payment Settings</button>
 
     <div id="bagianSoal">
@@ -148,7 +148,7 @@
     <br>
     <button class="btn btn-tarik" onclick="tarikSaldo()">💸 Withdraw Saldo</button>
   </div>
-  <!-- ✅ DIALOG PAYMENT SETTINGS -->
+  <!-- ✅ DIALOG: HANYA PAYMENT SETTINGS (MUNCUL PAS DI KLIK) -->
   <div id="dialogPengaturan" class="dialog-overlay sembunyi">
     <div class="dialog-box">
       <h3>Pengaturan Pembayaran</h3>
@@ -165,14 +165,15 @@
         <input type="email" class="form-input" id="emailPaypal" placeholder="Masukkan Email PayPal">
         <input type="text" class="form-input" id="namaPaypal" placeholder="Masukkan Nama Lengkap">
       </div>
-      <!-- ✅ TOMBOL SAVE DI BAWAH -->
+      <!-- ✅ TOMBOL SAVE -->
       <button class="btn-save sembunyi" id="btnSave" onclick="simpanPengaturan()">💾 Save</button>
       <br>
+      <!-- ✅ TOMBOL TUTUP DIPERBAIKI -->
       <button class="btn-tutup" onclick="tutupPengaturan()">Tutup</button>
     </div>
   </div>
 
-  <!-- ✅ DIALOG WITHDRAW -->
+  <!-- ✅ DIALOG WITHDRAW (TIDAK MUNCUL OTOMATIS) -->
   <div id="dialogPenarikan" class="dialog-overlay sembunyi">
     <div class="dialog-box">
       <h3>Formulir Penarikan</h3>
@@ -278,10 +279,10 @@
       } else { alert("⚠️ Iklan sedang dimuat, coba lagi!"); }
     }
 
-    // ✅ BUKA DIALOG PAYMENT SETTINGS
+    // ✅ BUKA DIALOG KHUSUS PAYMENT SETTINGS SAJA
     function bukaPengaturan(){
       document.getElementById("dialogPengaturan").classList.remove("sembunyi");
-      // Tampilkan data lama kalau sudah disimpan
+      // Tampilkan data lama kalau sudah ada
       if(metodeTerpilih === 'dana'){
         pilihMetode('dana');
         document.getElementById("nomorDana").value = dataPembayaran.nomor || "";
@@ -319,7 +320,7 @@
           nama: document.getElementById("namaPaypal").value
         };
       }
-      // Simpan ke penyimpanan HP
+      // Simpan permanen
       localStorage.setItem("metodePembayaran", metodeTerpilih);
       localStorage.setItem("dataPembayaran", JSON.stringify(dataPembayaran));
       // Tutup otomatis
@@ -327,7 +328,7 @@
       document.getElementById("pesanInfo").innerHTML = "<div class='pesan-sukses'>✅ Data Pembayaran Tersimpan!</div>";
     }
 
-    // ✅ TUTUP DIALOG PENGATURAN
+    // ✅ FUNGSI TUTUP DIALOG PAYMENT SETTINGS (DIPERBAIKI BERFUNGSI)
     function tutupPengaturan(){
       document.getElementById("dialogPengaturan").classList.add("sembunyi");
       document.getElementById("formDana").classList.add("sembunyi");
@@ -354,6 +355,7 @@
       document.getElementById("pesanInfo").innerHTML = "<div class='pesan-sukses'>✅ Tim Sedang Review Penghasilan Anda</div>";
     }
 
+    // ✅ FUNGSI TUTUP DIALOG WITHDRAW (DIPERBAIKI BERFUNGSI)
     function tutupDialog(){
       document.getElementById("dialogPenarikan").classList.add("sembunyi");
     }
