@@ -8,7 +8,7 @@
 <!-- 1️⃣ SDK Telegram WebApp -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-<!-- 2️⃣ SDK Monetag — Ganti kode zone kalau perlu -->
+<!-- 2️⃣ SDK IKLAN KAMU — SESUAI KODE YANG KASIH -->
 <script src='//libtl.com/sdk.js' data-zone='11003507' data-sdk='show_11003507'></script>
 
 <style>
@@ -37,7 +37,7 @@ body {
 }
 h2 {
   color: #1a1a2e;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   font-size: 22px;
 }
 p {
@@ -61,14 +61,11 @@ p {
   background: #ccc;
   cursor: not-allowed;
 }
-.tombol:not(:disabled):hover {
-  transform: scale(1.03);
-}
 .sembunyi {
   display: none !important;
 }
 .info {
-  margin-top: 20px;
+  margin-top: 25px;
   font-size: 12px;
   color: #aaa;
 }
@@ -95,7 +92,7 @@ p {
   <!-- Langkah 3: Selesai & Lanjut -->
   <div id="langkahSelesai" class="sembunyi">
     <h2>✅ Berhasil!</h2>
-    <p>Terima kasih, sedang dialihkan ke tujuan...</p>
+    <p>Sedang dialihkan ke tujuan...</p>
   </div>
 
   <div class="info">Powered by AGP Shortlink</div>
@@ -108,7 +105,7 @@ tg.ready();
 tg.expand();
 
 // ==============================================
-// ✅ GANTI LINK TUJUAN DI BAWAH INI!
+// ✅ GANTI LINK TUJUAN DISINI!
 // ==============================================
 const LINK_TUJUAN = "https://link-tujuan-kamu-disini.com";
 
@@ -117,17 +114,13 @@ function mulaiIklan() {
   document.getElementById('langkahMulai').classList.add('sembunyi');
   document.getElementById('langkahProses').classList.remove('sembunyi');
 
-  // === Kode iklan kamu langsung dipakai disini ===
+  // === FUNGSI IKLAN KAMU LANGSUNG DIPAKAI ===
   show_11003507()
     .then(() => {
-      // ✅ Iklan selesai ditonton
-      console.log("Iklan selesai ditonton!");
-      
-      // Tampilkan pesan selesai
+      // ✅ Selesai ditonton & diklaim
       document.getElementById('langkahProses').classList.add('sembunyi');
       document.getElementById('langkahSelesai').classList.remove('sembunyi');
       
-      // Tunggu sebentar lalu lanjut ke link tujuan
       setTimeout(() => {
         window.location.href = LINK_TUJUAN;
       }, 1500);
