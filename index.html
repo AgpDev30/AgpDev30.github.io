@@ -1,429 +1,147 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Teka Teki Cuan</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script src='//libtl.com/sdk.js' data-zone='11003507' data-sdk='show_11003507'></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AGP Shortlink — Tonton & Lanjutkan</title>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
-    body {
-      background: linear-gradient(135deg, #673AB7, #9C27B0);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      color: #ffffff;
-    }
-    .kotak {
-      background: rgba(0, 0, 0, 0.25);
-      padding: 30px;
-      border-radius: 20px;
-      width: 100%;
-      max-width: 420px;
-      text-align: center;
-    }
+<!-- 1️⃣ SDK Telegram WebApp -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    .saldo-box {
-      background: #7B61FF;
-      padding: 12px 20px;
-      border-radius: 12px;
-      margin-bottom: 25px;
-      font-size: 22px;
-      font-weight: bold;
-      color: #FFD700;
-      border: 3px solid #FFD700;
-      display: inline-block;
-      width: 100%;
-    }
+<!-- 2️⃣ SDK Monetag — Ganti kode zone kalau perlu -->
+<script src="https://monetag.com/sdk/zone/11003507.js"></script>
 
-    h1 {
-      font-size: 26px;
-      margin-bottom: 25px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-    .soal {
-      font-size: 18px;
-      margin-bottom: 25px;
-      line-height: 1.6;
-      background: rgba(255,255,255,0.1);
-      padding: 15px;
-      border-radius: 10px;
-    }
-    .jawaban {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      margin-bottom: 20px;
-      background: #ffffff;
-      color: #333;
-    }
-    .btn {
-      background: #ffffff;
-      color: #673AB7;
-      border: none;
-      padding: 14px 20px;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 16px;
-      margin: 8px 0;
-      cursor: pointer;
-      width: 100%;
-      transition: 0.3s;
-    }
-    .btn:hover { transform: scale(1.02); }
-    .btn2 { background: #FFC107; color: #222; font-size: 17px; padding: 16px; }
-    .btn-tarik { background: #4CAF50; color: #fff; font-size: 17px; padding: 16px; }
-    .btn-setting { background: #2196F3; color: #fff; font-size: 15px; padding: 12px; margin-bottom: 15px; }
-    .hasil { font-weight: bold; font-size: 17px; margin: 10px 0; min-height: 25px; }
-    .peringatan { color: #FF4444; font-weight: bold; margin-top: 8px; padding: 8px; background: rgba(255,68,68,0.1); border-radius: 6px; }
-    .pesan-sukses { color: #00FF7F; font-weight: bold; margin-top: 8px; padding: 8px; background: rgba(0,255,127,0.1); border-radius: 6px; }
-    .pesan-pending { color: #FFC107; font-weight: bold; margin-top: 12px; padding: 12px; background: rgba(255, 193, 7, 0.15); border-radius: 8px; border: 1px solid #FFC107; }
-    .sembunyi { display: none !important; }
-    .dialog-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-    }
-    .dialog-box {
-      background: #fff;
-      color: #333;
-      padding: 25px;
-      border-radius: 15px;
-      width: 90%;
-      max-width: 380px;
-      text-align: center;
-      box-shadow: 0 0 20px rgba(0,0,0,0.3);
-    }
-    .dialog-box h3 { margin-bottom: 15px; color: #673AB7; }
-    .pilihan-metod { display: flex; gap: 10px; margin-bottom: 15px; }
-    .btn-metod { flex: 1; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
-    .btn-dana { background: #00C2E8; color: white; }
-    .btn-paypal { background: #0070BA; color: white; }
-    .form-input { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; }
-    .btn-save { background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; margin-top: 10px; width: 100%; cursor: pointer; }
-    .btn-tutup { background: #ccc; color: #333; border: none; padding: 8px 15px; border-radius: 6px; margin-top: 10px; cursor: pointer; }
-  </style>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+body {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.kotak {
+  background: white;
+  border-radius: 20px;
+  padding: 40px 30px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+h2 {
+  color: #1a1a2e;
+  margin-bottom: 10px;
+  font-size: 22px;
+}
+p {
+  color: #666;
+  margin-bottom: 25px;
+  line-height: 1.6;
+}
+.tombol {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 12px;
+  width: 100%;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.tombol:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+.tombol:not(:disabled):hover {
+  transform: scale(1.03);
+}
+.sembunyi {
+  display: none !important;
+}
+.info {
+  margin-top: 20px;
+  font-size: 12px;
+  color: #aaa;
+}
+</style>
 </head>
 <body>
 
-  <div class="kotak">
-    <div class="saldo-box">💰 Saldo: $<span id="saldoUser">0.00</span></div>
-    <h1>🧩 TEKA TEKI CUAN</h1>
+<div class="kotak">
+  <h2>🎬 Tonton Iklan & Lanjutkan</h2>
+  <p>Tonton iklan sampai selesai untuk membuka link tujuan</p>
 
-    <!-- ✅ TOMBOL PAYMENT SETTINGS -->
-    <button class="btn btn-setting" onclick="bukaPengaturan()">⚙️ Payment Settings</button>
-
-    <div id="bagianSoal">
-      <p class="soal" id="teksSoal"></p>
-      <input class="jawaban" id="inputJawab" placeholder="Ketik jawaban disini" type="text" />
-      <br>
-      <button class="btn" onclick="cekJawaban()">✅ Cek Jawaban</button>
-      <br><br>
-      <button class="btn sembunyi" id="tombolLanjut" onclick="soalBerikutnya()">⏭️ Soal Berikutnya</button>
-    </div>
-    <div class="hasil" id="hasilTeks"></div>
-    <div id="pesanInfo"></div>
-
-    <!-- ✅ TAMPILAN STATUS PENARIKAN (SELALU DI BAWAH) -->
-    <div id="statusPenarikan" class="sembunyi pesan-pending">
-      <p>⏳ Team Sedang Riview Penghasilan anda</p>
-      <p id="jumlahTarik"></p>
-      <p id="tanggalTarik"></p>
-      <p id="idTarik"></p>
-    </div>
-
-    <br><br>
-    <button class="btn btn2" onclick="tampilkanIklan()">📺 Tonton Iklan Dan Dukung Kami</button>
-    <br>
-    <button class="btn btn-tarik" onclick="tarikSaldo()">💸 Withdraw Saldo</button>
-  </div>
-  <!-- ✅ DIALOG: PAYMENT SETTINGS -->
-  <div id="dialogPengaturan" class="dialog-overlay sembunyi">
-    <div class="dialog-box">
-      <h3>Pengaturan Pembayaran</h3>
-      <p>Pilih Metode Pembayaran:</p>
-      <div class="pilihan-metod">
-        <button class="btn-metod btn-dana" onclick="pilihMetode('dana')">DANA</button>
-        <button class="btn-metod btn-paypal" onclick="pilihMetode('paypal')">PAYPAL</button>
-      </div>
-      <div id="formDana" class="sembunyi">
-        <input type="text" class="form-input" id="nomorDana" placeholder="Masukkan Nomor DANA">
-        <input type="text" class="form-input" id="namaDana" placeholder="Masukkan Nama Lengkap">
-      </div>
-      <div id="formPaypal" class="sembunyi">
-        <input type="email" class="form-input" id="emailPaypal" placeholder="Masukkan Email PayPal">
-        <input type="text" class="form-input" id="namaPaypal" placeholder="Masukkan Nama Lengkap">
-      </div>
-      <button class="btn-save sembunyi" id="btnSave" onclick="simpanPengaturan()">💾 Save</button>
-      <br>
-      <button class="btn-tutup" onclick="tutupPengaturan()">Tutup</button>
-    </div>
+  <!-- Langkah 1: Tombol Mulai -->
+  <div id="langkahMulai">
+    <button class="tombol" onclick="mulaiIklan()">▶️ Mulai Tonton Iklan</button>
   </div>
 
-  <!-- ✅ DIALOG WITHDRAW -->
-  <div id="dialogPenarikan" class="dialog-overlay sembunyi">
-    <div class="dialog-box">
-      <h3>Formulir Penarikan</h3>
-      <p>Saldo Anda akan dikirim ke akun yang sudah disimpan</p>
-      <button class="btn-save" onclick="kirimPenarikan()">Kirim Penarikan</button>
-      <br>
-      <button class="btn-tutup" onclick="tutupDialog()">Tutup</button>
-    </div>
+  <!-- Langkah 2: Sedang Berjalan -->
+  <div id="langkahProses" class="sembunyi">
+    <h2>⏳ Sedang Memproses...</h2>
+    <p>Tunggu iklan selesai ditonton & klik Claim</p>
+    <button class="tombol" disabled>Mohon Tunggu...</button>
   </div>
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
 
-    if (tg.initDataUnsafe) {
-      tg.openLink("https://agpdev30.github.io/index.html");
-    }
+  <!-- Langkah 3: Selesai & Lanjut -->
+  <div id="langkahSelesai" class="sembunyi">
+    <h2>✅ Berhasil!</h2>
+    <p>Terima kasih, sedang dialihkan ke tujuan...</p>
+  </div>
 
-    let saldo = parseFloat(localStorage.getItem("saldoTekaTeki")) || 0.00;
-    updateSaldoTampilan();
+  <div class="info">Powered by AGP Shortlink</div>
+</div>
 
-    // ✅ DATA PEMBAYARAN & STATUS PENARIKAN
-    let metodeTerpilih = localStorage.getItem("metodePembayaran") || "";
-    let dataPembayaran = JSON.parse(localStorage.getItem("dataPembayaran")) || {};
-    let statusPenarikan = localStorage.getItem("statusPenarikan") || "kosong";
-    let dataPenarikan = JSON.parse(localStorage.getItem("dataPenarikan")) || {};
+<script>
+// Inisialisasi Telegram Mini App
+const tg = window.Telegram.WebApp;
+tg.ready();
+tg.expand();
 
-    const daftarSoal = [
-      {soal: "Semakin banyak kamu ambil, semakin besar ukurannya. Apakah itu?", jawaban: "lubang"},
-      {soal: "Benda apa yang kalau dipotong malah jadi semakin panjang?", jawaban: "jembatan"},
-      {soal: "Punya mata tapi tidak bisa melihat, punya kaki tapi tidak bisa berjalan. Apakah itu?", jawaban: "meja"},
-      {soal: "Apa yang naik tapi tidak pernah turun?", jawaban: "umur"},
-      {soal: "Benda apa yang kalau basah, beratnya jadi lebih ringan?", jawaban: "kapas"},
-      {soal: "Benda apa yang punya leher tapi tidak punya kepala?", jawaban: "baju"},
-      {soal: "Semakin kamu isi, semakin ringan benda apa itu?", jawaban: "balon"},
-      {soal: "Benda apa yang punya gigi tapi tidak bisa makan?", jawaban: "sisir"},
-      {soal: "Benda apa yang punya banyak gigi tapi tidak pernah mengunyah?", jawaban: "ritsleting"},
-      {soal: "Apa yang kalau dipakai, malah makin pendek?", jawaban: "lilin"},
-      {soal: "Benda apa yang punya kaki empat tapi tidak bisa berjalan?", jawaban: "meja"},
-      {soal: "Benda apa yang punya leher panjang tapi tidak punya kepala?", jawaban: "jerapah"},
-      {soal: "Apa yang ada di ujung langit dan di ujung bumi?", jawaban: "huruf i"},
-      {soal: "Benda apa yang kalau dibalik berubah jadi hal lain?", jawaban: "jam pasir"},
-      {soal: "Apa yang makin dipotong makin tinggi?", jawaban: "celana panjang"},
-      {soal: "Benda apa yang punya mulut tapi tidak bisa bicara?", jawaban: "pintu"},
-      {soal: "Benda apa yang punya banyak daun tapi bukan pohon?", jawaban: "buku"},
-      {soal: "Apa yang kalau kering malah jadi basah?", jawaban: "kapas mandi"},
-      {soal: "Benda apa yang bisa jalan tapi tidak punya kaki?", jawaban: "air"},
-      {soal: "Benda apa yang kalau diikat dia pergi, kalau dilepas dia diam?", jawaban: "sepatu"},
-      {soal: "Apa yang penuh lubang tapi tetap bisa menampung air?", jawaban: "spons"},
-      {soal: "Benda apa yang punya lidah tapi tidak punya mulut?", jawaban: "sepatu"},
-      {soal: "Benda apa yang kalau dijemur malah jadi berat?", jawaban: "es batu"},
-      {soal: "Apa yang lebih besar kalau diambil dari bagian tengah?", jawaban: "lubang"},
-      {soal: "Benda apa yang selalu datang tapi tidak pernah sampai?", jawaban: "besok"}
-    ];
+// ==============================================
+// ✅ GANTI LINK TUJUAN DI BAWAH INI!
+// ==============================================
+const LINK_TUJUAN = "https://link-tujuan-kamu-disini.com";
 
-    let nomorSekarang = 0;
+function mulaiIklan() {
+  // Ganti tampilan
+  document.getElementById('langkahMulai').classList.add('sembunyi');
+  document.getElementById('langkahProses').classList.remove('sembunyi');
 
-    function updateSaldoTampilan(){
-      document.getElementById("saldoUser").textContent = saldo.toFixed(2);
-      localStorage.setItem("saldoTekaTeki", saldo.toFixed(2));
-    }
-
-    function tampilkanSoal(){
-      document.getElementById("teksSoal").textContent = daftarSoal[nomorSekarang].soal;
-      document.getElementById("inputJawab").value = "";
-      document.getElementById("hasilTeks").textContent = "";
-      document.getElementById("pesanInfo").innerHTML = "";
-      document.getElementById("tombolLanjut").classList.add("sembunyi");
-    }
-
-    // ✅ TAMPILKAN STATUS PENARIKAN JIKA MASIH PENDING
-    cekStatusPenarikan();
-    function cekJawaban(){
-      const jawabUser = document.getElementById("inputJawab").value.trim().toLowerCase();
-      const jawabBenar = daftarSoal[nomorSekarang].jawaban.toLowerCase();
+  // === Kode iklan kamu langsung dipakai disini ===
+  show_11003507()
+    .then(() => {
+      // ✅ Iklan selesai ditonton
+      console.log("Iklan selesai ditonton!");
       
-      if(jawabUser === jawabBenar){
-        document.getElementById("hasilTeks").textContent = "✅ BENAR! + $0.40 Ditambahkan";
-        document.getElementById("hasilTeks").style.color = "#81FF81";
-        saldo += 0.40;
-        updateSaldoTampilan();
-        document.getElementById("pesanInfo").innerHTML = "<div class='pesan-sukses'>+ $0.40 Berhasil!</div>";
-        soalBerikutnyaOtomatis();
-        if(typeof show_11003507 !== 'undefined') { show_11003507('reward'); }
-      }else{
-        document.getElementById("hasilTeks").textContent = "❌ Salah, coba lagi ya!";
-        document.getElementById("hasilTeks").style.color = "#FF9E9E";
-      }
-    }
-
-    function soalBerikutnyaOtomatis(){
-      nomorSekarang = (nomorSekarang + 1) % daftarSoal.length;
-      tampilkanSoal();
-    }
-
-    function soalBerikutnya(){
-      nomorSekarang = (nomorSekarang + 1) % daftarSoal.length;
-      tampilkanSoal();
-    }
-
-    function tampilkanIklan(){
-      if(typeof show_11003507 !== 'undefined'){
-        show_11003507('reward').then(function(){ 
-          saldo += 0.02; 
-          updateSaldoTampilan();
-          document.getElementById("pesanInfo").innerHTML = "<div class='pesan-sukses'>+ $0.02 Terima Kasih!</div>";
-        });
-      } else { alert("⚠️ Iklan sedang dimuat, coba lagi!"); }
-    }
-
-    // ✅ BUKA PAYMENT SETTINGS
-    function bukaPengaturan(){
-      document.getElementById("dialogPengaturan").classList.remove("sembunyi");
-      if(metodeTerpilih === 'dana'){
-        pilihMetode('dana');
-        document.getElementById("nomorDana").value = dataPembayaran.nomor || "";
-        document.getElementById("namaDana").value = dataPembayaran.nama || "";
-      }
-      if(metodeTerpilih === 'paypal'){
-        pilihMetode('paypal');
-        document.getElementById("emailPaypal").value = dataPembayaran.email || "";
-        document.getElementById("namaPaypal").value = dataPembayaran.nama || "";
-      }
-    }
-
-    function pilihMetode(metode){
-      metodeTerpilih = metode;
-      document.getElementById("formDana").classList.add("sembunyi");
-      document.getElementById("formPaypal").classList.add("sembunyi");
-      if(metode === 'dana') document.getElementById("formDana").classList.remove("sembunyi");
-      if(metode === 'paypal') document.getElementById("formPaypal").classList.remove("sembunyi");
-      document.getElementById("btnSave").classList.remove("sembunyi");
-    }
-
-    function simpanPengaturan(){
-      if(metodeTerpilih === 'dana'){
-        dataPembayaran = {
-          metode: 'dana',
-          nomor: document.getElementById("nomorDana").value,
-          nama: document.getElementById("namaDana").value
-        };
-      }
-      if(metodeTerpilih === 'paypal'){
-        dataPembayaran = {
-          metode: 'paypal',
-          email: document.getElementById("emailPaypal").value,
-          nama: document.getElementById("namaPaypal").value
-        };
-      }
-      localStorage.setItem("metodePembayaran", metodeTerpilih);
-      localStorage.setItem("dataPembayaran", JSON.stringify(dataPembayaran));
-      tutupPengaturan();
-      document.getElementById("pesanInfo").innerHTML = "<div class='pesan-sukses'>✅ Data Pembayaran Tersimpan!</div>";
-    }
-
-    function tutupPengaturan(){
-      document.getElementById("dialogPengaturan").classList.add("sembunyi");
-      document.getElementById("formDana").classList.add("sembunyi");
-      document.getElementById("formPaypal").classList.add("sembunyi");
-      document.getElementById("btnSave").classList.add("sembunyi");
-    }
-    // ✅ FITUR WITHDRAW LENGKAP SESUAI PERMINTAAN
-    function tarikSaldo(){
-      document.getElementById("pesanInfo").innerHTML = "";
-
-      // Cek kalau masih ada penarikan berjalan
-      if(statusPenarikan === "pending"){
-        document.getElementById("pesanInfo").innerHTML = "<div class='peringatan'>⚠️ Kamu masih melakukan penarikan / tunggu penarikan berhasil!</div>";
-        return;
-      }
-
-      // Cek syarat lain
-      if(saldo < 10.00){
-        document.getElementById("pesanInfo").innerHTML = "<div class='peringatan'>❌ Saldo Tidak Cukup! Minimal $10.00</div>";
-        return;
-      }
-      if(!metodeTerpilih){
-        document.getElementById("pesanInfo").innerHTML = "<div class='peringatan'>⚠️ Atur Dulu Payment Settings!</div>";
-        return;
-      }
-
-      // Tampilkan dialog konfirmasi
-      document.getElementById("dialogPenarikan").classList.remove("sembunyi");
-    }
-
-    function kirimPenarikan(){
-      tutupDialog();
-
-      // Simpan data penarikan
-      let jumlahDitarik = saldo;
-      let tanggalSekarang = new Date().toLocaleString('id-ID');
-      let idUnik = "TRX-" + Math.floor(Math.random() * 1000000);
-
-      dataPenarikan = {
-        jumlah: jumlahDitarik.toFixed(2),
-        tanggal: tanggalSekarang,
-        id: idUnik
-      };
-
-      // Ubah status jadi PENDING & saldo jadi 0
-      statusPenarikan = "pending";
-      saldo = 0.00;
-      updateSaldoTampilan();
-
-      // Simpan ke penyimpanan
-      localStorage.setItem("statusPenarikan", statusPenarikan);
-      localStorage.setItem("dataPenarikan", JSON.stringify(dataPenarikan));
-
-      // Tampilkan status di bawah
-      tampilkanStatusPenarikan();
-    }
-
-    // ✅ Tampilkan status penarikan
-    function tampilkanStatusPenarikan(){
-      document.getElementById("statusPenarikan").classList.remove("sembunyi");
-      document.getElementById("jumlahTarik").textContent = "$ " + dataPenarikan.jumlah;
-      document.getElementById("tanggalTarik").textContent = "Tanggal: " + dataPenarikan.tanggal;
-      document.getElementById("idTarik").textContent = "ID Penarikan: " + dataPenarikan.id;
-    }
-
-    // ✅ Cek saat aplikasi dibuka
-    function cekStatusPenarikan(){
-      if(statusPenarikan === "pending"){
-        tampilkanStatusPenarikan();
-      }
-    }
-
-    // ✅ Nanti kalau penarikan sukses, panggil fungsi ini:
-    // function penarikanSukses(){
-    //   statusPenarikan = "sukses";
-    //   localStorage.setItem("statusPenarikan", statusPenarikan);
-    //   document.getElementById("statusPenarikan").classList.add("sembunyi");
-    // }
-
-    function tutupDialog(){
-      document.getElementById("dialogPenarikan").classList.add("sembunyi");
-    }
-
-    // ✅ JALANKAN AWAL
-    tampilkanSoal();
-    cekStatusPenarikan();
-  </script>
+      // Tampilkan pesan selesai
+      document.getElementById('langkahProses').classList.add('sembunyi');
+      document.getElementById('langkahSelesai').classList.remove('sembunyi');
+      
+      // Tunggu sebentar lalu lanjut ke link tujuan
+      setTimeout(() => {
+        window.location.href = LINK_TUJUAN;
+      }, 1500);
+    })
+    .catch((error) => {
+      // ❌ Dilewati / gagal
+      alert("Harap tonton sampai selesai & klik Claim!");
+      
+      // Kembalikan ke tampilan awal
+      document.getElementById('langkahProses').classList.add('sembunyi');
+      document.getElementById('langkahMulai').classList.remove('sembunyi');
+    });
+}
+</script>
 
 </body>
 </html>
