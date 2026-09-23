@@ -1,140 +1,522 @@
-<!DOCTYPE html>
-<html lang="id">
+<!DOCTYPE html><html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AGP Shortlink — Tonton & Lanjutkan</title>
-
-<!-- 1️⃣ SDK Telegram WebApp -->
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-<!-- 2️⃣ SDK IKLAN KAMU — SESUAI KODE YANG KASIH -->
-<script src='//libtl.com/sdk.js' data-zone='11003507' data-sdk='show_11003507'></script>
-
-<style>
+<title>AGP Shortlink — Tonton & Lanjutkan</title><!-- ==========================================
+     TELEGRAM WEB APP SDK
+     ========================================== --><script src="https://telegram.org/js/telegram-web-app.js"></script><!-- ==========================================
+     SDK IKLAN
+     ========================================== --><script
+    src="//libtl.com/sdk.js"
+    data-zone="11003507"
+    data-sdk="show_11003507">
+</script><style>
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
+
 body {
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
 }
+
 .kotak {
-  background: white;
-  border-radius: 20px;
-  padding: 40px 30px;
-  max-width: 400px;
-  width: 100%;
-  text-align: center;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    background: white;
+    border-radius: 20px;
+    padding: 40px 30px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
 }
+
 h2 {
-  color: #1a1a2e;
-  margin-bottom: 15px;
-  font-size: 22px;
+    color: #1a1a2e;
+    margin-bottom: 15px;
+    font-size: 22px;
 }
+
 p {
-  color: #666;
-  margin-bottom: 25px;
-  line-height: 1.6;
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.6;
 }
+
 .tombol {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: white;
-  border: none;
-  padding: 15px 30px;
-  font-size: 18px;
-  font-weight: bold;
-  border-radius: 12px;
-  width: 100%;
-  cursor: pointer;
-  transition: 0.3s;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 12px;
+    width: 100%;
+    cursor: pointer;
+    transition: 0.3s;
 }
+
 .tombol:disabled {
-  background: #ccc;
-  cursor: not-allowed;
+    background: #ccc;
+    cursor: not-allowed;
 }
+
 .sembunyi {
-  display: none !important;
+    display: none !important;
 }
+
 .info {
-  margin-top: 25px;
-  font-size: 12px;
-  color: #aaa;
+    margin-top: 25px;
+    font-size: 12px;
+    color: #aaa;
 }
-</style>
-</head>
-<body>
 
-<div class="kotak">
-  <h2>🎬 Tonton Iklan & Lanjutkan</h2>
-  <p>Tonton iklan sampai selesai untuk membuka link tujuan</p>
+.status {
+    font-size: 13px;
+    color: #999;
+    margin-top: 10px;
+}
+</style></head><body><div class="kotak"><!-- ======================================
+     TAMPILAN AWAL
+     ====================================== -->
+<div id="langkahMulai">
 
-  <!-- Langkah 1: Tombol Mulai -->
-  <div id="langkahMulai">
-    <button class="tombol" onclick="mulaiIklan()">▶️ Mulai Tonton Iklan</button>
-  </div>
+    <h2>🎬 Tonton Iklan & Lanjutkan</h2>
 
-  <!-- Langkah 2: Sedang Berjalan -->
-  <div id="langkahProses" class="sembunyi">
-    <h2>⏳ Sedang Memproses...</h2>
-    <p>Tunggu iklan selesai ditonton & klik Claim</p>
-    <button class="tombol" disabled>Mohon Tunggu...</button>
-  </div>
+    <p>
+        Iklan sedang disiapkan...
+    </p>
 
-  <!-- Langkah 3: Selesai & Lanjut -->
-  <div id="langkahSelesai" class="sembunyi">
-    <h2>✅ Berhasil!</h2>
-    <p>Sedang dialihkan ke tujuan...</p>
-  </div>
+    <button
+        id="tombolMulai"
+        class="tombol"
+        type="button"
+        onclick="mulaiIklan()">
+        ▶️ Mulai Tonton Iklan
+    </button>
 
-  <div class="info">Powered by AGP Shortlink</div>
+    <div id="status" class="status">
+        Memuat iklan...
+    </div>
+
 </div>
 
-<script>
-// Inisialisasi Telegram Mini App
-const tg = window.Telegram.WebApp;
-tg.ready();
-tg.expand();
 
-// ==============================================
-// ✅ GANTI LINK TUJUAN DISINI!
-// ==============================================
-const LINK_TUJUAN = "https://link-tujuan-kamu-disini.com";
+<!-- ======================================
+     TAMPILAN PROSES
+     ====================================== -->
+<div id="langkahProses" class="sembunyi">
+
+    <h2>⏳ Sedang Memproses...</h2>
+
+    <p>
+        Tunggu iklan selesai ditonton dan lakukan Claim
+        jika diminta.
+    </p>
+
+    <button
+        class="tombol"
+        type="button"
+        disabled>
+        Mohon Tunggu...
+    </button>
+
+</div>
+
+
+<!-- ======================================
+     TAMPILAN SELESAI
+     ====================================== -->
+<div id="langkahSelesai" class="sembunyi">
+
+    <h2>✅ Berhasil!</h2>
+
+    <p>
+        Iklan selesai.
+        Sedang dialihkan ke tujuan...
+    </p>
+
+</div>
+
+
+<div class="info">
+    Powered by AGP Shortlink
+</div>
+
+</div><script>
+
+/* ==========================================
+   TELEGRAM WEB APP
+   ========================================== */
+
+try {
+
+    if (
+        typeof window.Telegram !== "undefined" &&
+        window.Telegram.WebApp
+    ) {
+
+        const tg = window.Telegram.WebApp;
+
+        tg.ready();
+        tg.expand();
+
+    }
+
+} catch (error) {
+
+    console.log(
+        "Telegram WebApp tidak tersedia:",
+        error
+    );
+
+}
+
+
+/* ==========================================
+   LINK TUJUAN
+   GANTI DENGAN LINK ASLI KAMU
+   ========================================== */
+
+const LINK_TUJUAN =
+    "https://link-tujuan-kamu-disini.com";
+
+
+/* ==========================================
+   VARIABEL STATUS
+   ========================================== */
+
+let iklanSedangBerjalan = false;
+let iklanSelesai = false;
+
+
+/* ==========================================
+   FUNGSI UPDATE STATUS
+   ========================================== */
+
+function setStatus(teks) {
+
+    const status =
+        document.getElementById("status");
+
+    if (status) {
+
+        status.textContent = teks;
+
+    }
+
+}
+
+
+/* ==========================================
+   FUNGSI TAMPILAN PROSES
+   ========================================== */
+
+function tampilkanProses() {
+
+    document
+        .getElementById("langkahMulai")
+        .classList.add("sembunyi");
+
+    document
+        .getElementById("langkahProses")
+        .classList.remove("sembunyi");
+
+}
+
+
+/* ==========================================
+   FUNGSI TAMPILAN SELESAI
+   ========================================== */
+
+function tampilkanSelesai() {
+
+    document
+        .getElementById("langkahProses")
+        .classList.add("sembunyi");
+
+    document
+        .getElementById("langkahSelesai")
+        .classList.remove("sembunyi");
+
+}
+
+
+/* ==========================================
+   FUNGSI MENJALANKAN IKLAN
+   ========================================== */
 
 function mulaiIklan() {
-  // Ganti tampilan
-  document.getElementById('langkahMulai').classList.add('sembunyi');
-  document.getElementById('langkahProses').classList.remove('sembunyi');
 
-  // === FUNGSI IKLAN KAMU LANGSUNG DIPAKAI ===
-  show_11003507()
-    .then(() => {
-      // ✅ Selesai ditonton & diklaim
-      document.getElementById('langkahProses').classList.add('sembunyi');
-      document.getElementById('langkahSelesai').classList.remove('sembunyi');
-      
-      setTimeout(() => {
-        window.location.href = LINK_TUJUAN;
-      }, 1500);
-    })
-    .catch((error) => {
-      // ❌ Dilewati / gagal
-      alert("Harap tonton sampai selesai & klik Claim!");
-      
-      // Kembalikan ke tampilan awal
-      document.getElementById('langkahProses').classList.add('sembunyi');
-      document.getElementById('langkahMulai').classList.remove('sembunyi');
-    });
+    /* Cegah pemanggilan ganda */
+
+    if (iklanSedangBerjalan) {
+
+        return;
+
+    }
+
+    if (iklanSelesai) {
+
+        return;
+
+    }
+
+
+    /* Tandai sedang berjalan */
+
+    iklanSedangBerjalan = true;
+
+
+    /* Tampilkan proses */
+
+    tampilkanProses();
+
+
+    /* ======================================
+       CEK FUNGSI SDK
+       ====================================== */
+
+    if (
+        typeof window.show_11003507 !==
+        "function"
+    ) {
+
+        console.log(
+            "show_11003507 belum tersedia"
+        );
+
+
+        iklanSedangBerjalan = false;
+
+
+        document
+            .getElementById("langkahProses")
+            .classList.add("sembunyi");
+
+        document
+            .getElementById("langkahMulai")
+            .classList.remove("sembunyi");
+
+
+        setStatus(
+            "Iklan belum siap. Silakan tekan tombol."
+        );
+
+
+        return;
+
+    }
+
+
+    /* ======================================
+       JALANKAN SDK IKLAN
+       ====================================== */
+
+    let hasilIklan;
+
+
+    try {
+
+        hasilIklan =
+            window.show_11003507();
+
+    } catch (error) {
+
+        console.log(
+            "Error menjalankan iklan:",
+            error
+        );
+
+
+        iklanSedangBerjalan = false;
+
+
+        document
+            .getElementById("langkahProses")
+            .classList.add("sembunyi");
+
+        document
+            .getElementById("langkahMulai")
+            .classList.remove("sembunyi");
+
+
+        setStatus(
+            "Iklan gagal dijalankan. Silakan coba lagi."
+        );
+
+
+        return;
+
+    }
+
+
+    /* ======================================
+       TUNGGU HASIL IKLAN
+       ====================================== */
+
+    Promise.resolve(hasilIklan)
+
+        .then(function() {
+
+            console.log(
+                "Iklan selesai."
+            );
+
+
+            iklanSedangBerjalan = false;
+            iklanSelesai = true;
+
+
+            /* Tampilkan berhasil */
+
+            tampilkanSelesai();
+
+
+            /* ==================================
+               REDIRECT SETELAH 1.5 DETIK
+               ================================== */
+
+            setTimeout(function() {
+
+                window.location.href =
+                    LINK_TUJUAN;
+
+            }, 1500);
+
+        })
+
+        .catch(function(error) {
+
+            console.log(
+                "Iklan gagal atau dibatalkan:",
+                error
+            );
+
+
+            iklanSedangBerjalan = false;
+
+
+            /* Kembali ke halaman awal */
+
+            document
+                .getElementById("langkahProses")
+                .classList.add("sembunyi");
+
+            document
+                .getElementById("langkahMulai")
+                .classList.remove("sembunyi");
+
+
+            setStatus(
+                "Iklan gagal. Tekan tombol untuk mencoba lagi."
+            );
+
+        });
+
 }
-</script>
 
-</body>
+
+/* ==========================================
+   TUNGGU SDK SEBELUM AUTO START
+   ========================================== */
+
+function tungguSDKDanJalankan() {
+
+    let percobaan = 0;
+
+    const maksimalPercobaan = 20;
+
+
+    const timer =
+        setInterval(function() {
+
+            percobaan++;
+
+
+            /* ==================================
+               SDK SUDAH SIAP
+               ================================== */
+
+            if (
+                typeof window.show_11003507 ===
+                "function"
+            ) {
+
+                clearInterval(timer);
+
+
+                setStatus(
+                    "Iklan siap..."
+                );
+
+
+                /* ==============================
+                   AUTO START
+                   ============================== */
+
+                setTimeout(function() {
+
+                    mulaiIklan();
+
+                }, 500);
+
+
+                return;
+
+            }
+
+
+            /* ==================================
+               SDK BELUM SIAP
+               ================================== */
+
+            setStatus(
+                "Menyiapkan iklan..."
+            );
+
+
+            /* ==================================
+               BATAS WAKTU
+               ================================== */
+
+            if (
+                percobaan >=
+                maksimalPercobaan
+            ) {
+
+                clearInterval(timer);
+
+
+                setStatus(
+                    "Tekan tombol untuk mencoba."
+                );
+
+            }
+
+        }, 500);
+
+}
+
+
+/* ==========================================
+   SAAT HALAMAN SELESAI DIMUAT
+   ========================================== */
+
+window.addEventListener(
+    "load",
+    function() {
+
+        tungguSDKDanJalankan();
+
+    }
+);
+
+</script></body>
 </html>
