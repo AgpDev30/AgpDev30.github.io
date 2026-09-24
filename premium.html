@@ -11,7 +11,7 @@
         .logo{text-align:center;color:white;font-size:26px;font-weight:bold;margin-bottom:5px;}
         .logo span{color:#f59e0b;}
         .sub-logo{text-align:center;color:#9ca3af;font-size:13px;margin-bottom:25px;}
-        .card{background:white;border-radius:20px;padding:28px;box-shadow:0 10px 40px rgba(0,0,0,0.3);}
+        .card{background:white;border-radius:20px;padding:28px;box-shadow:0 10px 40px rgba(0,0,0,0.3);margin-bottom:20px;}
         .card h2{text-align:center;color:#1f2937;margin-bottom:22px;font-size:21px;}
         .produk-box{background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #fcd34d;border-radius:14px;padding:20px;margin-bottom:22px;text-align:center;}
         .produk-nama{font-size:20px;font-weight:bold;color:#92400e;margin-bottom:8px;}
@@ -42,6 +42,7 @@
         .sukses-ikon{font-size:40px;margin-bottom:10px;}
         .vip-aktif{color:#059669;font-weight:bold;font-size:18px;margin:10px 0;}
         .kadaluarsa{color:#6b7280;font-size:14px;margin-top:5px;}
+        small{color:#6b7280;font-size:12px;}
     </style>
 </head>
 <body>
@@ -78,7 +79,7 @@
             <div class="form-group">
                 <label for="deviceId">📱 Device ID (Salin dari Aplikasi)</label>
                 <input type="text" id="deviceId" placeholder="Contoh: a1b2c3d4e5f6g7h8" required oninput="updateDeviceId()">
-                <small style="color:#6b7280">Buka aplikasi → cari Device ID → salin ke sini</small>
+                <small>Buka aplikasi → cari Device ID → salin ke sini</small>
             </div>
 
             <div class="form-group">
@@ -133,27 +134,29 @@
     </div>
 
     <div class="footer">
-        Cek langsung di aplikasi • Hubungi: <a href="https://wa.me/6281234567890" target="_blank">+62 812-3456-7890</a><br>
+        Cek langsung di aplikasi • Hubungi: <a href="https://wa.me/6285198334953" target="_blank">+62 851-9833-4953</a><br>
         © 2026 AGP STORE 🔒
     </div>
 </div>
 
 <script>
 // ==============================================
-// 🔑 ISI DATA KAMU DI BAWAH
+// 🔑 ISI DATA KAMU DI BAWAH — WAJIB DIISI!
 // ==============================================
-const MERCHANT_CODE = "ISI_MERCHANT_KAMU";   // Ganti dari NasionalPay
-const API_KEY       = "SK_53ba59ca07b8e1514afe4d1bac4e156b470667005a191f3f26dae53637";     // Ganti dari NasionalPay
-const NO_WA_TOKO    = "6285198334953";        // Ganti nomor WA toko
+const MERCHANT_CODE = "JUAL_BELI_GAME_BOOSTER"; // ← Nama toko kamu dari NasionalPay
+const API_KEY       = "SK_53ba59ca07b8e1514afe4d1bac4e156b470667005a191f3f26dae53637"; // ✅ Sudah BENAR
+const NO_WA_TOKO    = "6285198334953"; // ✅ Sudah BENAR
 
-// 🔥 FIREBASE — GANTI DENGAN MILIKMU
-const FIREBASE_URL   = "https://NAMA-PROYEK.firebaseio.com/devices"; // ← Ganti!
+// 🔥 GANTI URL FIREBASE DI BAWAH INI!
+const FIREBASE_URL = "https://game-pref-gen-3-default-rtdb.asia-southeast1.firebasedatabase.app/devices";
+
+// Contoh: "https://agp-booster-12345.firebaseio.com/devices"
 
 const HALAMAN_INI   = window.location.href.split('?')[0];
 let selectedMetode = "DANA";
 
 // ==============================================
-// 📋 FUNGSI TAMPILAN
+// 📋 FUNGSI
 // ==============================================
 function buatNoPesanan() { return "AGP-" + Date.now(); }
 function updateDeviceId() { 
@@ -196,20 +199,18 @@ function kembaliBeli() {
 // ==============================================
 async function simpanKeFirebase(deviceId, durasiMenit, noPesanan, namaPaket, nominal, namaPembeli, wa) {
     const nowMillis = Date.now();
-    const expiredMillis = nowMillis + (durasiMenit * 60 * 1000); // menit → milidetik
+    const expiredMillis = nowMillis + (durasiMenit * 60 * 1000);
 
-    // ✅ STRUKTUR SAMA PERSIS DENGAN KODE APLIKASI KAMU!
     const data = {
-        allowed: true,              // ← VIP AKTIF
-        registeredAt: nowMillis,    // ← waktu daftar
-        expiredAt: expiredMillis,   // ← waktu habis (ms)
-        noPesanan: noPesanan,       // tambahan
-        namaPaket: namaPaket,       // tambahan
-        namaPembeli: namaPembeli,   // tambahan
-        wa: wa                      // tambahan
+        allowed: true,
+        registeredAt: nowMillis,
+        expiredAt: expiredMillis,
+        noPesanan: noPesanan,
+        namaPaket: namaPaket,
+        namaPembeli: namaPembeli,
+        wa: wa
     };
 
-    // Kirim ke: /devices/{deviceId}.json
     const url = `${FIREBASE_URL}/${encodeURIComponent(deviceId)}.json`;
     
     const res = await fetch(url, {
@@ -218,7 +219,7 @@ async function simpanKeFirebase(deviceId, durasiMenit, noPesanan, namaPaket, nom
         body: JSON.stringify(data)
     });
 
-    if (!res.ok) throw new Error("Gagal simpan ke Firebase");
+    if (!res.ok) throw new Error("Cek URL Firebase & Rules");
     return { expiredMillis };
 }
 
@@ -237,19 +238,17 @@ document.getElementById('formBeli').addEventListener('submit', async e => {
     const wa = document.getElementById('wa').value.trim();
 
     if (!deviceId || !nominal || !nama || !wa) {
-        return alert("⚠️ Lengkapi semua data! Device ID harus sama dengan di aplikasi.");
+        return alert("⚠️ Lengkapi semua data!");
     }
 
     const noPesanan = buatNoPesanan();
     document.getElementById('noPesanan').textContent = noPesanan;
     document.getElementById('deviceIdTampil').textContent = deviceId;
 
-    // Simpan sementara
     sessionStorage.setItem('data_bayar', JSON.stringify({
         deviceId, durasiMenit, namaPaket, noPesanan, nominal, nama, wa
     }));
 
-    // Arahkan ke pembayaran
     const signature = btoa(MERCHANT_CODE + API_KEY + noPesanan + nominal);
     const params = new URLSearchParams({
         merchant: MERCHANT_CODE,
@@ -266,7 +265,7 @@ document.getElementById('formBeli').addEventListener('submit', async e => {
 });
 
 // ==============================================
-// ✅ KEMBALI DARI PEMBAYARAN → SIMPAN LANGSUNG
+// ✅ KEMBALI DARI PEMBAYARAN
 // ==============================================
 window.addEventListener('load', async () => {
     const p = new URLSearchParams(window.location.search);
@@ -278,21 +277,15 @@ window.addEventListener('load', async () => {
                 document.getElementById('btnBeli').disabled = true;
                 document.getElementById('loading').style.display = 'block';
                 
-                // 🔥 Simpan ke Firebase — struktur sama persis!
                 const hasil = await simpanKeFirebase(
-                    data.deviceId,
-                    data.durasiMenit,
-                    data.noPesanan,
-                    data.namaPaket,
-                    data.nominal,
-                    data.nama,
-                    data.wa
+                    data.deviceId, data.durasiMenit, data.noPesanan,
+                    data.namaPaket, data.nominal, data.nama, data.wa
                 );
                 
                 tampilSukses(data.deviceId, data.namaPaket, hasil.expiredMillis);
                 sessionStorage.removeItem('data_bayar');
             } catch (err) {
-                alert("⚠️ Gagal simpan: " + err.message + "\nHubungi admin.");
+                alert("⚠️ Gagal: " + err.message + "\nCek URL Firebase & Rules!");
             } finally {
                 document.getElementById('loading').style.display = 'none';
             }
